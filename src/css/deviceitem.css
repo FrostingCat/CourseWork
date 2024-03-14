@@ -1,0 +1,81 @@
+/* .card {
+	display: flex;
+	margin-top: 40px;
+	align-items: center;
+	justify-content: center;
+} */
+
+/* .testimonial {
+	display: flex;
+	margin-left: 30px;
+	align-items: center;
+	text-align: left;
+} */
+
+/* .testimonial>img {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	margin-right: 100px;
+	max-width: 500px;
+	max-height: 450px;
+} */
+
+/* .page-testimonial {
+	display: flex;
+	margin-top: 40px;
+	align-items: center;
+	text-align: center;
+	text-align: left;
+}
+
+.page-testimonial>img {
+	margin-right: 150px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	max-width: 800px;
+	max-height: 500px;
+} */
+
+
+.card-admin {
+	margin-left: 25%;
+	width: 48%;
+	text-align: left;
+	display: flex;
+	margin-top: 40px;
+}
+
+.people {
+	padding: 2%;
+	margin-left: 2%;
+	font-size: 18px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.small-rectangle-image {
+    width: 70%;
+    height: auto;
+}
+
+.small-round-image {
+    width: 100px; /* Adjust the width and height as needed */
+    height: 100px;
+    border-radius: 50%; /* Make it round */
+    object-fit: cover; /* Ensure the image fills the container without distortion */
+}
+
+.delete-button {
+	margin-left: 12%;
+	margin-top: 40%;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.switch {
+	margin-left: 8%;
+	margin-top: 35%;
+}

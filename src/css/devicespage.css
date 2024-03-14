@@ -1,0 +1,28 @@
+.paper {
+	margin-top: 3%;
+	margin-left: 25%;
+}
+
+/* .MuiPaper-root {
+	width: 70% !important;
+	height: 500px !important;
+} */
+
+.device-card {
+	position: absolute;
+	width: 900px;
+}
+
+.devices-label {
+	margin-top: 3%;
+	margin-left: 25%;
+}
+
+.button-add {
+	margin-left: 70%;
+}
+
+.plus-btn {
+	margin-right: 20%;
+	margin-bottom: 40%;
+}

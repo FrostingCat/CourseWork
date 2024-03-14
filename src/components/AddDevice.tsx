@@ -1,7 +1,8 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Navigate } from "react-router-dom";
 import { Button, FormControl, Select, InputLabel, Input } from '@material-ui/core'
 import '../css/adddevice.css'
+import { getRooms } from '../Api/ApiRooms';
 
 type Props = {
 	saveDevice: (e: React.FormEvent, formData: deviceSchema) => void
@@ -14,16 +15,30 @@ enum DeviceType {
 }
 
 const AddDevice: React.FC<Props> = ({ saveDevice }) => {
+	const [rooms, setRooms] = useState<string[]>(["Комната 1", "Комната 2", "Комната 3"]);
+	const [newRoom, setNewRoom] = useState("");
 	const [errorMessage, setErrorMessage] = useState("")
 	const navigate = useNavigate()
 
 	const [formData, setFormData] = useState<deviceSchema>({
-        _id: '',
-        name: "",
-        deviceType: DeviceType.CAMERA
-    });
+		_id: '',
+		name: "",
+		deviceType: DeviceType.CAMERA
+	});
 
-	function handleForm(e: any): void{
+	useEffect(() => {
+		//fetchRooms()
+	}, []);
+
+	const fetchRooms = (): void => {
+		getRooms()
+			.then(({ data: { data } }: roomSchema[] | any) => {
+				setRooms(data)
+			})
+			.catch((err: Error) => console.log(err))
+	}
+
+	function handleForm(e: any): void {
 		const key = e.currentTarget.id;
 
 		setFormData({
@@ -31,6 +46,30 @@ const AddDevice: React.FC<Props> = ({ saveDevice }) => {
 			[e.currentTarget.id]: e.currentTarget.value,
 		})
 	}
+
+	const handleAddRoom = () => {
+		if (newRoom.trim() !== "") {
+			//handleSaveRoom()
+			setRooms([...rooms, newRoom.trim()]);
+			setNewRoom("");
+		}
+	};
+
+	// const handleSaveRoom = (e: React.FormEvent, formData: roomSchema): void => {
+	// 	e.preventDefault()
+	// 	if (checkFormData(formData)) {
+	// 		addRoom(formData)
+	// 			.then(({ status, data }) => {
+	// 				if (status !== 200) {
+	// 					alert("Error! Room not saved")
+	// 				}
+	// 				console.log(data.room, { data })
+	// 				setRooms(data.room)
+	// 			})
+	// 			.catch(err => console.log(err))
+	// 	}
+	// 	console.log("error")
+	// }
 
 	return (
 		<div>
@@ -47,10 +86,14 @@ const AddDevice: React.FC<Props> = ({ saveDevice }) => {
 						<option value={DeviceType.CAMERA}>Камера</option>
 					</Select>
 				</FormControl>
+				<Input placeholder="Новая комната" value={newRoom} onChange={(e) => setNewRoom(e.target.value)} />
+				<Button onClick={handleAddRoom}>Добавить</Button>
 				<FormControl>
-					<InputLabel htmlFor='deviceType'>Выберите комнату</InputLabel>
+					<InputLabel htmlFor='roomNumber'>Выберите комнату</InputLabel>
 					<Select onChange={handleForm} id='roomNumber' name='roomNumber'>
-						<option value={DeviceType.LAMP}>Лампа</option>
+						{rooms.map((room, index) => (
+							<option key={index} value={room}>{room}</option>
+						))}
 					</Select>
 				</FormControl>
 			</div>

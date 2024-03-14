@@ -16,7 +16,20 @@ import AddRoom from '../components/AddRoom';
 import { getDateTime } from '../components/DateUtil';
 
 function RoomsPage() {
-	const [rooms, setRooms] = useState<roomSchema[]>([])
+	const [rooms, setRooms] = useState<roomSchema[]>([
+		{
+			_id: "1",
+			name: "Комната 1"
+		},
+		{
+			_id: "2",
+			name: "Комната 2"
+		},
+		{
+			_id: "3",
+			name: "Комната 3"
+		},
+	])
 	const [isModalActive, setModalActive] = useState(false);
 	const [isModalAddActive, setModalAddActive] = useState(false);
 
@@ -108,7 +121,7 @@ function RoomsPage() {
 
 	return (
 		<motion.div>
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 			<div>
 				<ul id="slide-out" className="sidenav sidenav-fixed big">
 					<li><div className="user-view">
@@ -142,7 +155,7 @@ function RoomsPage() {
 
 				<div className="fixed-action-btn plus-btn">
 					<a className="btn-floating btn waves-effect purple darken-1">
-					<i className="large material-icons" onClick={handleModalAddOpen}>add</i>
+						<i className="large material-icons" onClick={handleModalAddOpen}>add</i>
 					</a>
 				</div>
 				<div>
@@ -169,32 +182,30 @@ function RoomsPage() {
 			>
 				<Paper elevation={3} />
 			</Box> */}
-
-				<AnimatePresence>
-					{rooms
-						?.map((room: roomSchema) => (
-							<div>
-								<RoomItem
-									key={room._id}
-									deleteRoom={handleDeleteRoom}
-									room={room}
-								/>
-								<Link to={`http://localhost:3000/rooms/${room._id}`} state={{ room: room }} >
-									<Button>View</Button>
-								</Link>
-								<Button className="button" type="button" onClick={handleModalOpen}>
-									Edit
-								</Button>
-								<div>
-									{isModalActive && (
-										<Modal title="Editing" onClose={handleModalClose}>
-											<EditRoom editRoom={handleEditRoom} room={room} />
-										</Modal>
-									)}
+				<div className="room-container">
+					<AnimatePresence>
+						{rooms
+							?.map((room: roomSchema) => (
+								<div className="room-item">
+									<RoomItem
+										key={room._id}
+										deleteRoom={handleDeleteRoom}
+										room={room}
+									/>
+									<Button className="button" type="button" onClick={handleModalOpen}>
+										Edit
+									</Button>
+									<div>
+										{isModalActive && (
+											<Modal title="Editing" onClose={handleModalClose}>
+												<EditRoom editRoom={handleEditRoom} room={room} />
+											</Modal>
+										)}
+									</div>
 								</div>
-							</div>
-						))}
-				</AnimatePresence>
+							))}
+					</AnimatePresence>
+				</div>
 
 				{/* <div className="row device-card">
 				<div className="col s12 m6">

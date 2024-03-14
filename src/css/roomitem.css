@@ -1,0 +1,28 @@
+.delete-room {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.card-room {
+	border-radius: 40%;
+	margin-left: 25%;
+	width: 18%;
+	text-align: left;
+	display: flex;
+	justify-content: space-between;
+    align-items: center;
+	margin-top: 40px;
+}
+
+.people-room {
+	display: flex;
+	flex-direction: row;
+	padding: 2%;
+	margin-left: 2%;
+	font-size: 18px;
+	font-family: Arial, Helvetica, sans-serif;
+}

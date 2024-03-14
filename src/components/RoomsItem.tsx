@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Button } from '@material-ui/core'
-import '../css/deviceitem.css'
+import '../css/roomitem.css'
 
 type Props = roomProps & {
 	deleteRoom: (_id: string) => void
@@ -8,15 +8,11 @@ type Props = roomProps & {
 
 const Item: React.FC<Props> = ({ room, deleteRoom }) => {
 	return (
-		<Card className="card-admin">
-			<Typography className="people">
-				id: {room._id}<br></br>
-				name: {room.name}<br></br>
-			</Typography>
-			<Button
-				onClick={() => deleteRoom(room._id)}
-			>
-				Удалить
+		<Card className="card-room">
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+			<Button className="people-room">
+				{room.name}<br></br>
+				<button className="material-icons delete-room pink darken-3" onClick={() => deleteRoom(room._id)}>delete</button>
 			</Button>
 		</Card>
 	)

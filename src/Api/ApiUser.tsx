@@ -8,10 +8,10 @@ export const checkCodeUser = async (
 	const user: checkCodeSchema = {
 		email: email
 	}
-	console.log(email)
+	console.log(user)
 	const saveUser: AxiosResponse<ApiCodeDataType> = await axios.post(
 		baseUrl + "/user",
-		email
+		user
 	)
 	return saveUser
 }

@@ -9,6 +9,6 @@ interface codeSchema {
 type ApiCodeDataType = {
 	message: string
 	status: string
-	user: codeSchema[]
-	user?: codeSchema
+	code: codeSchema
+	code?: codeSchema
 }

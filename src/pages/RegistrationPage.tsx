@@ -1,8 +1,15 @@
 import { checkCodeUser } from '../Api/ApiUser';
+import { useDispatch } from 'react-redux';
 import '../css/registration.css'
 import lamp from "../images/lampLogin.jpg"
+import { addCode, addEmail, addFirstName, addLastName, addPassword } from '../components/codeSlice';
+import bcrypt from 'bcryptjs';
+import { useSelector } from 'react-redux';
+import { RootState } from '../components/store';
 
 function RegistrationPage() {
+	const dispatch = useDispatch();
+
 	const handleRegistration = () => {
 		const firstNameInput = document.getElementById('first_name') as HTMLInputElement;
 		const lastNameInput = document.getElementById('last_name') as HTMLInputElement;
@@ -14,16 +21,25 @@ function RegistrationPage() {
 		const email = emailInput.value;
 		const password = passwordInput.value;
 
-		// const handleCheckUser = (): void => {
-		// 	checkCodeUser(email)
-		// 		.then(({ status, data }) => {
-		// 			if (status !== 200) {
-		// 				throw new Error("Error! Device not deleted")
-		// 			}
-		// 			setDevices(data.device)
-		// 		})
-		// 		.catch(err => console.log(err))
-		// }
+		dispatch(addFirstName(firstName));
+		dispatch(addLastName(lastName));
+		dispatch(addEmail(email));
+
+		const salt = bcrypt.genSaltSync(10);
+
+		const hashedPassword = bcrypt.hashSync(password, salt);
+		dispatch(addPassword(hashedPassword));
+
+		console.log(hashedPassword);
+
+		checkCodeUser(email)
+			.then(({ status, data }) => {
+				if (status === 502) {
+					throw new Error("Error! User is not registered")
+				}
+				dispatch(addCode(data.code.code));
+			})
+			.catch(err => console.log(err))
 	}
 
 	return (
@@ -55,7 +71,8 @@ function RegistrationPage() {
 					</div>
 					<div className="buttons">
 						<a href="/code" className="waves-effect purple darken-1 btn-large button" onClick={handleRegistration}>
-							Регистрация</a>
+							Регистрация
+						</a>
 					</div>
 					{/* <div className="card-action">
 						<a href="#" className="black-text">Войти</a>

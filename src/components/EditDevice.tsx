@@ -12,8 +12,10 @@ const EditDevice: React.FC<Props> = ({ device, editDevice }) => {
 
 	const [formData, setFormData] = useState<deviceSchema>({
 		_id: device._id,
+		room_id: device.room_id,
 		name: device.name,
-		deviceType: device.deviceType
+		deviceType: device.deviceType,
+		state: false
 	});
 
 	function handleForm(e: any) {

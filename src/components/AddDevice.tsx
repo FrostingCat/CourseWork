@@ -22,8 +22,10 @@ const AddDevice: React.FC<Props> = ({ saveDevice }) => {
 
 	const [formData, setFormData] = useState<deviceSchema>({
 		_id: '',
+		room_id: '',
 		name: "",
-		deviceType: DeviceType.CAMERA
+		deviceType: DeviceType.CAMERA,
+		state: false
 	});
 
 	useEffect(() => {

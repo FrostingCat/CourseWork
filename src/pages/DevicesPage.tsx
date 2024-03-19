@@ -1,20 +1,14 @@
-import '../css/devicespage.css'
-import '../css/materialize.css'
-import M from 'materialize-css'
-import lamp from "../images/lamp.jpg"
+import { AnimatePresence, motion } from "framer-motion";
+import M from 'materialize-css';
 import React, { useEffect, useState } from 'react';
-import { getDevices, addDevice, deleteDevice, editDevice } from '../Api/ApiDevices'
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Button, Typography } from '@material-ui/core'
-import Modal from "../components/modal";
-import DeviceItem from '../components/DeviceItem'
-import EditDevice from '../components/EditDevice';
+import { addDevice, deleteDevice, editDevice, getDevices } from '../Api/ApiDevices';
 import AddDevice from '../components/AddDevice';
-import AddIcon from '@material-ui/icons/Add';
 import { getDateTime } from '../components/DateUtil';
+import DeviceItem from '../components/DeviceItem';
+import Modal from "../components/modal";
+import '../css/devicespage.css';
+import '../css/materialize.css';
+import lamp from "../images/lamp.jpg";
 
 enum DeviceType {
 	LAMP = 'Лампа',
@@ -28,18 +22,24 @@ function DevicesPage() {
 	const [devices, setDevices] = useState<deviceSchema[]>([
 		{
 			_id: '1',
+			room_id: '1',
 			name: "Устройство 1",
-			deviceType: DeviceType.CAMERA
+			deviceType: DeviceType.CAMERA,
+			state: false
 		},
 		{
 			_id: '2',
+			room_id: '1',
 			name: "Устройство 2",
-			deviceType: DeviceType.LAMP
+			deviceType: DeviceType.LAMP,
+			state: false
 		},
 		{
 			_id: '3',
+			room_id: '2',
 			name: "Устройство 3",
-			deviceType: DeviceType.LIGHT
+			deviceType: DeviceType.LIGHT,
+			state: false
 		}
 	]);
 	const [isModalAddActive, setModalAddActive] = useState(false);
@@ -180,14 +180,9 @@ function DevicesPage() {
 									editDevice={handleEditDevice}
 									device={device}
 								/>
-								<Link to={`http://localhost:3000/devices/${device._id}`} state={{ device: device }} >
-									<Button>View</Button>
-								</Link>
 							</div>
 						))}
 				</AnimatePresence>
-
-				// validateEmail туда почту обратно код после ввода отправить данные. Еще при регистрации сделать уник дом
 
 				{/* <div className="row device-card">
 				<div className="col s12 m6">

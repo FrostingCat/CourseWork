@@ -6,8 +6,12 @@ import camera from "../images/camera.jpg";
 import led from "../images/room.jpg";
 import Modal from "../components/modal";
 import EditDevice from '../components/EditDevice';
-import { Button, FormControl, InputLabel, Input, Select } from '@material-ui/core'
-import { manageDevice } from '../Api/ApiDevices';
+import { Button, FormControl, InputLabel, Input, Select, MenuItem } from '@material-ui/core'
+import { manageDevice, manageLamp, manageLight } from '../Api/ApiDevices';
+import ColorPicker from './ColorPicker';
+import { DeviceHubRounded } from '@material-ui/icons';
+import AlarmTime from './AlarmTime';
+import Time from './Time';
 
 type Props = deviceProps & {
 	deleteDevice: (_id: string) => void;
@@ -23,10 +27,15 @@ enum DeviceType {
 const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 	const [picture, setPicture] = useState("");
 	const [isModalActive, setModalActive] = useState(false);
+	const [isColorPickerActive, setColorPickerActive] = useState(false);
+	const [isClockAlarmPickerActive, setClockAlarmPickerActive] = useState(false);
+	const [isClockTimePickerActive, setClockTimePickerActive] = useState(false);
 	const [formData, setFormData] = useState<deviceSchema>({
 		_id: device._id,
+		room_id: device.room_id,
 		name: device.name,
-		deviceType: device.deviceType
+		deviceType: device.deviceType,
+		state: false
 	});
 
 	useEffect(() => {
@@ -53,12 +62,24 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 		}
 	}
 
-	function handleManageDevice(e: any) {
+	function handleManageLight() {
 		var _id = device._id
-		manageDevice(_id)
+		var color = device.state ? '000000' : '446AD9'
+		manageLight(_id, color)
 			.then(({ status }) => {
 				if (status !== 200) {
-					throw new Error("Error! Device can't be managed")
+					throw new Error("Error! Light can't be managed")
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
+	function handleManageLamp() {
+		var _id = device._id
+		manageLamp(_id, !device.state)
+			.then(({ status }) => {
+				if (status !== 200) {
+					throw new Error("Error! Lamp can't be managed")
 				}
 			})
 			.catch(err => console.log(err))
@@ -71,6 +92,30 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 		setModalActive(false);
 	};
 
+	const handleColorPickerOpen = () => {
+		setColorPickerActive(true);
+	};
+
+	const handleColorPickerClose = () => {
+		setColorPickerActive(false);
+	};
+
+	const handleManageClockAlarmPickerOpen = () => {
+		setClockAlarmPickerActive(true);
+	}
+
+	const handleManageClockAlarmPickerClose = () => {
+		setClockAlarmPickerActive(false);
+	}
+
+	const handleManageClockTimePickerOpen = () => {
+		setClockTimePickerActive(true);
+	}
+
+	const handleManageClockTimePickerClose = () => {
+		setClockTimePickerActive(false);
+	}
+
 	return (
 		<div className="grid-container">
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
@@ -79,14 +124,48 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 				<p className="people">
 					{device.name}<br />
 					{device.deviceType}<br />
-					<div className="switch">
-						<label>
-							Off
-							<input type="checkbox" onChange={handleManageDevice}/>
-								<span className="lever"></span>
-								On
-						</label>
-					</div>
+					{device.deviceType === DeviceType.LIGHT && (
+						<div>
+							<button className="material-icons change-color-button purple darken-1" onClick={handleColorPickerOpen}>color_lens</button>
+							{isColorPickerActive && (
+								<Modal title="Выберите цвет" onClose={handleColorPickerClose}>
+									<ColorPicker device={device} />
+								</Modal>
+							)}
+							<div className="switch">
+								<label>
+									Off
+									<input type="checkbox" onChange={handleManageLight} />
+									<span className="lever"></span>
+									On
+								</label>
+							</div>
+						</div>
+					)}
+					{device.deviceType === DeviceType.LAMP && (
+						<div>
+							<button className="material-icons alarm-button purple darken-1" onClick={handleManageClockAlarmPickerOpen}>access_alarm</button>
+							{isClockAlarmPickerActive && (
+								<Modal title="Выберите время" onClose={handleManageClockAlarmPickerClose}>
+									<AlarmTime device={device} />
+								</Modal>
+							)}
+							<button className="material-icons alarm-button purple darken-1" onClick={handleManageClockTimePickerOpen}>access_time</button>
+							{isClockTimePickerActive && (
+								<Modal title="Выберите время" onClose={handleManageClockTimePickerClose}>
+									<Time device={device} />
+								</Modal>
+							)}
+							<div className="switch">
+								<label>
+									Off
+									<input type="checkbox" onChange={handleManageLamp} />
+									<span className="lever"></span>
+									On
+								</label>
+							</div>
+						</div>
+					)}
 					<button className="material-icons delete-button pink darken-3" onClick={() => deleteDevice(device._id)}>delete</button>
 					<button className="material-icons delete-button purple darken-1" onClick={handleModalOpen}>edit</button>
 				</p>

@@ -1,7 +1,9 @@
 interface deviceSchema {
 	_id: string
+	room_id: string
 	name: string
 	deviceType: DeviceType
+	state: boolean
 }
 
 enum DeviceType {

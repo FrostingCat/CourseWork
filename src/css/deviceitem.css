@@ -53,29 +53,51 @@
 }
 
 .small-rectangle-image {
-    width: 70%;
-    height: auto;
+	width: 70%;
+	height: auto;
 }
 
 .small-round-image {
-    width: 100px; /* Adjust the width and height as needed */
-    height: 100px;
-    border-radius: 50%; /* Make it round */
-    object-fit: cover; /* Ensure the image fills the container without distortion */
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	object-fit: cover;
 }
 
 .delete-button {
 	margin-left: 12%;
-	margin-top: 40%;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    color: white;
-    border: none;
-    cursor: pointer;
+	margin-top: 20%;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	color: white;
+	border: none;
+	cursor: pointer;
 }
 
 .switch {
 	margin-left: 8%;
-	margin-top: 35%;
+	margin-top: 15%;
+}
+
+.change-color-button {
+	margin-left: 35%;
+	margin-top: 15%;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+.alarm-button {
+	margin-left: 12%;
+	margin-top: 15%;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	color: white;
+	border: none;
+	cursor: pointer;
 }

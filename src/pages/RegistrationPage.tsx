@@ -1,7 +1,31 @@
+import { checkCodeUser } from '../Api/ApiUser';
 import '../css/registration.css'
 import lamp from "../images/lampLogin.jpg"
 
 function RegistrationPage() {
+	const handleRegistration = () => {
+		const firstNameInput = document.getElementById('first_name') as HTMLInputElement;
+		const lastNameInput = document.getElementById('last_name') as HTMLInputElement;
+		const emailInput = document.getElementById('email') as HTMLInputElement;
+		const passwordInput = document.getElementById('password_inline') as HTMLInputElement;
+
+		const firstName = firstNameInput.value;
+		const lastName = lastNameInput.value;
+		const email = emailInput.value;
+		const password = passwordInput.value;
+
+		// const handleCheckUser = (): void => {
+		// 	checkCodeUser(email)
+		// 		.then(({ status, data }) => {
+		// 			if (status !== 200) {
+		// 				throw new Error("Error! Device not deleted")
+		// 			}
+		// 			setDevices(data.device)
+		// 		})
+		// 		.catch(err => console.log(err))
+		// }
+	}
+
 	return (
 		<div className="login">
 			<div className="image">
@@ -30,7 +54,8 @@ function RegistrationPage() {
 						</div>
 					</div>
 					<div className="buttons">
-						<a href="/code" className="waves-effect purple darken-1 btn-large button">Регистрация</a>
+						<a href="/code" className="waves-effect purple darken-1 btn-large button" onClick={handleRegistration}>
+							Регистрация</a>
 					</div>
 					{/* <div className="card-action">
 						<a href="#" className="black-text">Войти</a>

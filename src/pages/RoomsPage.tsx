@@ -14,6 +14,14 @@ import RoomItem from '../components/RoomsItem'
 import EditRoom from '../components/EditRoom';
 import AddRoom from '../components/AddRoom';
 import { getDateTime } from '../components/DateUtil';
+import { deleteDevice, editDevice, getDevicesByRoomId } from '../Api/ApiDevices';
+import DeviceItem from '../components/DeviceItem'
+
+enum DeviceType {
+	LAMP = 'Лампа',
+	LIGHT = 'Лента',
+	CAMERA = 'Камера'
+}
 
 function RoomsPage() {
 	const [rooms, setRooms] = useState<roomSchema[]>([
@@ -32,6 +40,24 @@ function RoomsPage() {
 	])
 	const [isModalActive, setModalActive] = useState(false);
 	const [isModalAddActive, setModalAddActive] = useState(false);
+	const [selectedRoom, setSelectedRoom] = useState('');
+	const [devices, setDevices] = useState<deviceSchema[]>([])
+	const [roomElements, setRoomElements] = useState<deviceSchema[]>([
+		{
+			_id: '1',
+			room_id: '1',
+			name: "Устройство 1",
+			deviceType: DeviceType.CAMERA,
+			state: false
+		},
+		{
+			_id: '2',
+			room_id: '1',
+			name: "Устройство 2",
+			deviceType: DeviceType.LAMP,
+			state: false
+		}
+	]);
 
 	const checkFormData = (formData: roomSchema): boolean => {
 		if (!formData.name) {
@@ -94,6 +120,43 @@ function RoomsPage() {
 	const handleModalAddClose = () => {
 		setModalAddActive(false);
 	};
+
+	const handleRoomClick = (roomId: string) => {
+		setSelectedRoom(roomId);
+		fetchDevicesById(roomId);
+	};
+
+	const fetchDevicesById = (_id: string): void => {
+		getDevicesByRoomId(_id)
+			.then(({ data: { data } }: deviceSchema[] | any) => {
+				setRoomElements(data)
+			})
+			.catch((err: Error) => console.log(err))
+	}
+
+	const handleEditDevice = (e: React.FormEvent, _id: string, formData: deviceSchema): void => {
+		e.preventDefault()
+		editDevice(_id, formData)
+			.then(({ status, data }) => {
+				if (status !== 200) {
+					throw new Error("Error! Device not edited")
+				}
+				console.log(data.device, { data })
+				setDevices(data.device)
+			})
+			.catch(err => console.log(err))
+	}
+
+	const handleDeleteDevice = (_id: string): void => {
+		deleteDevice(_id)
+			.then(({ status, data }) => {
+				if (status !== 200) {
+					throw new Error("Error! Device not deleted")
+				}
+				setDevices(data.device)
+			})
+			.catch(err => console.log(err))
+	}
 
 	useEffect(() => {
 		let elements = document.querySelectorAll(".sidenav");
@@ -166,33 +229,14 @@ function RoomsPage() {
 					)}
 				</div>
 
-				{/* <button onClick={handleSaveDevice}>
-					<AddIcon /> Add Device
-				</button> */}
-
-				{/* <Box className='paper'
-				sx={{
-					display: 'flex',
-					flexWrap: 'wrap',
-					'& > :not(style)': {
-						m: 1,
-						height: 128,
-					},
-				}}
-			>
-				<Paper elevation={3} />
-			</Box> */}
 				<div className="room-container">
-					<AnimatePresence>
-						{rooms
-							?.map((room: roomSchema) => (
-								<div className="room-item">
-									<RoomItem
-										key={room._id}
-										deleteRoom={handleDeleteRoom}
-										room={room}
-									/>
-									<Button className="button" type="button" onClick={handleModalOpen}>
+					{rooms
+						?.map((room: roomSchema) => (
+							<div className="room-item">
+								<Button key={room._id} onClick={() => handleRoomClick(room._id)} className="people-room" style={{ border: '1px solid #000', borderRadius: 20, background: '' }}>
+									{room.name}<br></br>
+								</Button>
+								{/* <Button className="button" type="button" onClick={handleModalOpen}>
 										Edit
 									</Button>
 									<div>
@@ -201,11 +245,37 @@ function RoomsPage() {
 												<EditRoom editRoom={handleEditRoom} room={room} />
 											</Modal>
 										)}
-									</div>
-								</div>
-							))}
-					</AnimatePresence>
+									</div> */}
+							</div>
+						))}
 				</div>
+
+				{selectedRoom && (
+					<div>
+						<h4 className='devices-label'>Комната {selectedRoom}</h4>
+						<Button className="button" type="button" onClick={handleModalOpen}>
+							Edit
+						</Button>
+						{/* <div>
+							{isModalActive && (
+								<Modal title="Editing" onClose={handleModalClose}>
+									<EditRoom editRoom={handleEditRoom} room={room} />
+								</Modal>
+							)}
+						</div> */}
+						{roomElements.map((device) => (
+							<div>
+								<DeviceItem
+									key={device._id}
+									deleteDevice={handleDeleteDevice}
+									editDevice={handleEditDevice}
+									device={device}
+								/>
+							</div>
+						))}
+					</div>
+				)}
+
 
 				{/* <div className="row device-card">
 				<div className="col s12 m6">

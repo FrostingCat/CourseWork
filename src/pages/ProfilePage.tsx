@@ -1,10 +1,10 @@
-import '../css/profilepage.css'
-import '../css/materialize.css'
-import M from 'materialize-css'
-import lamp from "../images/lamp.jpg"
+import M from 'materialize-css';
 import { useEffect } from 'react';
-import Profile from '../components/Profile';
 import { getDateTime } from '../components/DateUtil';
+import Profile from '../components/Profile';
+import '../css/materialize.css';
+import '../css/profilepage.css';
+import lamp from "../images/lamp.jpg";
 
 function ProfilePage() {
 	useEffect(() => {
@@ -22,6 +22,9 @@ function ProfilePage() {
 
 	return (
 		<div>
+			<div className="image">
+				<img className="login-image" src={lamp} />
+			</div>
 			<ul id="slide-out" className="sidenav sidenav-fixed big">
 				<li><div className="user-view">
 					<div className="background">
@@ -50,23 +53,8 @@ function ProfilePage() {
 				</div></li>
 			</ul>
 
-			{/* <div className="row profile-row">
-				<div className="col s12 m6">
-					<div className="card">
-						<div className="card-image">
-							<img src={lamp} />
-							<span className="card-title">Профиль</span>
-							<a className="btn-floating halfway-fab waves-effect waves-light red"><i className="material-icons">add</i></a>
-						</div>
-						<div className="card-content">
-							<p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
-						</div>
-					</div>
-				</div>
-			</div> */}
-
 			<div className="row profile-row">
-				<div className="col s12 m6 ">
+				<div className="col s12 m6">
 					<Profile/>
 				</div>
 			</div>

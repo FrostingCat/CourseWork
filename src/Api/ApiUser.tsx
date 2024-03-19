@@ -9,45 +9,63 @@ export const checkCodeUser = async (
 		email: email
 	}
 	console.log(user)
-	const saveUser: AxiosResponse<ApiCodeDataType> = await axios.post(
-		baseUrl + "/user",
+	const code: AxiosResponse<ApiCodeDataType> = await axios.post(
+		baseUrl + "/user/validate_email",
+		user
+	)
+	return code
+}
+
+export const createUser = async (
+	firstName: string,
+	lastName: string,
+	email: string,
+	password: string,
+): Promise<AxiosResponse<null>> => {
+	const user: userRegisterSchema = {
+		name: firstName,
+		surname: lastName,
+		e_mail: email,
+		hash_password: password
+	}
+	console.log(user)
+	const saveUser: AxiosResponse<null> = await axios.post(
+		baseUrl + "/user/register",
 		user
 	)
 	return saveUser
 }
 
-
-
-export const getRooms = async (): Promise<AxiosResponse<ApiRoomDataType>> => {
-	const rooms: AxiosResponse<ApiRoomDataType> = await axios.get(
-		baseUrl + "/rooms"
-	)
-	return rooms
-}
-
-
-
-export const editRoom = async (
-	_id: string,
-	formData: roomSchema
-): Promise<AxiosResponse<ApiRoomDataType>> => {
-	console.log({formData})
-	const room: Omit<roomSchema, "_id"> = {
-		name: formData.name
+export const authorizeUser = async (
+	email: string,
+	password: string,
+): Promise<AxiosResponse<userRetAuthSchema>> => {
+	const user: userAuthorizeSchema = {
+		e_mail: email,
+		hash_password: password
 	}
-	console.table(room)
-	const editRoom: AxiosResponse<ApiRoomDataType> = await axios.put(
-		`${baseUrl}/rooms/${_id}`,
-		room
+	console.log(user)
+	const authUser: AxiosResponse<userRetAuthSchema> = await axios.post(
+		baseUrl + "/user/authorize",
+		user
 	)
-	return editRoom
+	return authUser
 }
 
-export const deleteRoom = async (
-	_id: string
-): Promise<AxiosResponse<ApiRoomDataType>> => {
-	const deletedRoom: AxiosResponse<ApiRoomDataType> = await axios.delete(
-		`${baseUrl}/rooms/${_id}`
+export const editUser = async (
+	formData: userProfileSchema,
+	email: string
+): Promise<AxiosResponse<null>> => {
+	console.log({ formData })
+	const user: userEditSchema = {
+		name: formData.name,
+		surname: formData.surname,
+		e_mail: email
+	}
+	console.table(user)
+	const editUser: AxiosResponse<null> = await axios.put(
+		`${baseUrl}/user/update`,
+		user
 	)
-	return deletedRoom
+	return editUser
 }

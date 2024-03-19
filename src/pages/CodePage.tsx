@@ -1,13 +1,14 @@
-import { useSelector } from 'react-redux';
-import '../css/login.css'
-import lamp from "../images/lampLogin.jpg"
-import { RootState } from '../components/store';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { createUser } from '../Api/ApiUser';
+import { RootState } from '../components/store';
+import '../css/login.css';
+import lamp from "../images/lampLogin.jpg";
+import { useSelector } from 'react-redux';
 
 function CodePage() {
-	const [isRightCode, setRightCode] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string>("");
+	const navigate = useNavigate();
 
 	const data = useSelector((state: RootState) => state.user);
 	console.table(data);
@@ -17,7 +18,14 @@ function CodePage() {
 		const code = codeInput.value;
 		
 		if (code === data.code) {
-			setRightCode(true);
+			createUser(data.firstName, data.lastName, data.email, data.password)
+			.then(({ status }) => {
+				if (status !== 201) {
+					throw new Error("Error! User is not registered")
+				}
+				navigate('/home');
+			})
+			.catch(err => console.log(err))
 		} else {
 			setErrorMessage("Введен неверный код");
 		}
@@ -43,10 +51,6 @@ function CodePage() {
 							Войти
 						</a>
 					</div>
-					{isRightCode && (
-						<Link to={`http://localhost:3000/home`} >
-					</Link>
-					)}
 				</div>
 			</div>
 		</div>

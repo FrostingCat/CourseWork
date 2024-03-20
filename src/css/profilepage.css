@@ -11,10 +11,10 @@
 }
 
 .profile-row {
-	width: 60%;
+	width: 33%;
 	position: absolute;
 	transform: translate(-50%, -50%);
 	top: 40%;
-	left: 33%;
+	left: 18%;
 	z-index: 1;
-  }
+}

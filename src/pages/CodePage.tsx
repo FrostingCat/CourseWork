@@ -23,12 +23,14 @@ function CodePage() {
 				if (status !== 201) {
 					throw new Error("Error! User is not registered")
 				}
-				navigate('/home');
+				//navigate('/home');
 			})
 			.catch(err => console.log(err))
 		} else {
 			setErrorMessage("Введен неверный код");
 		}
+
+		navigate('/home');
 	}
 
 	return (

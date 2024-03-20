@@ -7,7 +7,7 @@ import { getRooms, addRoom, deleteRoom, editRoom } from '../Api/ApiRooms'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Typography } from '@material-ui/core'
 import Modal from "../components/modal";
 import RoomItem from '../components/RoomsItem'
@@ -16,6 +16,8 @@ import AddRoom from '../components/AddRoom';
 import { getDateTime } from '../components/DateUtil';
 import { deleteDevice, editDevice, getDevicesByRoomId } from '../Api/ApiDevices';
 import DeviceItem from '../components/DeviceItem'
+import { useSelector } from 'react-redux';
+import { RootState } from '../components/store';
 
 enum DeviceType {
 	LAMP = 'Лампа',
@@ -24,6 +26,8 @@ enum DeviceType {
 }
 
 function RoomsPage() {
+	var navigate = useNavigate();
+	const data = useSelector((state: RootState) => state.user);
 	const [rooms, setRooms] = useState<roomSchema[]>([
 		{
 			_id: "1",
@@ -192,16 +196,16 @@ function RoomsPage() {
 							<img src={lamp} />
 						</div>
 						<a><img className="circle" src={lamp} /></a>
-						<a><span className="white-text name">Name</span></a>
-						<a><span className="white-text email"></span></a>
+						<a><span className="white-text name">{data.firstName} {data.lastName}</span></a>
+						<a><span className="white-text email">{data.email}</span></a>
 					</div></li>
-					<li><a className="waves-effect" href="/home">Дом</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/home")}> Дом</a></li>
 					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" href="/rooms">Комнаты</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/rooms")}>Комнаты</a></li>
 					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" href="/devices">Устройства</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/devices")}>Устройства</a></li>
 					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" href="/profile">Профиль</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/profile")}>Профиль</a></li>
 				</ul>
 
 				<ul id="slide-out" className="sidenav sidenav-fixed small">

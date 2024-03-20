@@ -8,6 +8,12 @@
 	width: 100%;
 }
 
+.card-main {
+	border-radius: 20px;
+	overflow: hidden;
+	background-color: rgba(255,255,255,0.8);
+}
+
 .profile-row {
 	position: absolute;
 	margin-top: 5%;
@@ -17,6 +23,8 @@
 .card-action {
 	display: flex;
 	align-items: center;
+	overflow: hidden;
+	border-radius: 20px;
 }
 
 .button {

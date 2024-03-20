@@ -1,14 +1,14 @@
-import { checkCodeUser } from '../Api/ApiUser';
-import { useDispatch } from 'react-redux';
-import '../css/registration.css'
-import lamp from "../images/lampLogin.jpg"
-import { addCode, addEmail, addFirstName, addLastName, addPassword } from '../components/codeSlice';
 import bcrypt from 'bcryptjs';
-import { useSelector } from 'react-redux';
-import { RootState } from '../components/store';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { checkCodeUser } from '../Api/ApiUser';
+import { addCode, addEmail, addFirstName, addLastName, addPassword } from '../components/codeSlice';
+import '../css/registration.css';
+import lamp from "../images/lampLogin.jpg";
 
 function RegistrationPage() {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const handleRegistration = () => {
 		const firstNameInput = document.getElementById('first_name') as HTMLInputElement;
@@ -38,8 +38,11 @@ function RegistrationPage() {
 					throw new Error("Error! User is not registered")
 				}
 				dispatch(addCode(data.code.code));
+				//
 			})
 			.catch(err => console.log(err))
+
+		navigate('/code');
 	}
 
 	return (
@@ -70,7 +73,7 @@ function RegistrationPage() {
 						</div>
 					</div>
 					<div className="buttons">
-						<a href="/code" className="waves-effect purple darken-1 btn-large button" onClick={handleRegistration}>
+						<a className="waves-effect purple darken-1 btn-large button" onClick={handleRegistration}>
 							Регистрация
 						</a>
 					</div>

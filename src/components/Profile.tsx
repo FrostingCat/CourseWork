@@ -49,8 +49,8 @@ function Profile() {
 	};
 
 	return (
-		<div>
-			<div className="card deep-purple lighten-4">
+		<div className='profile-card'>
+			<div style={{borderRadius: '20px', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.8)'}} className="card">
 				<div className="card-header">
 					<img src={lamp} />
 				</div>
@@ -59,7 +59,9 @@ function Profile() {
 					<p>{data.firstName} {data.lastName}</p>
 					<p>{data.email}</p>
 				</div>
-				<div className="card-action">
+				<div className="card-action"
+					style={{ backgroundColor: 'rgba(255,255,255,0)' }}
+				>
 					<a href="/" className="waves-effect pink darken-3 btn-large button but-1">Выйти</a>
 					<a className="waves-effect purple darken-1 btn-large button" onClick={handleEditProfileOpen}>
 						Редактировать
@@ -67,7 +69,7 @@ function Profile() {
 					{isEditProfile && (
 						<Modal title="Изменение данных" onClose={handleEditProfileClose}>
 							<div className='Add-Form'>
-								<FormControl>
+								<FormControl variant="filled">
 									<InputLabel htmlFor='name'>Имя</InputLabel>
 									<Input onChange={handleForm} type='text' id='name' />
 								</FormControl>

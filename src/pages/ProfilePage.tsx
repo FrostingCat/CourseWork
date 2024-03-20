@@ -5,8 +5,13 @@ import Profile from '../components/Profile';
 import '../css/materialize.css';
 import '../css/profilepage.css';
 import lamp from "../images/lamp.jpg";
+import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
+import { RootState } from '../components/store';
 
 function ProfilePage() {
+	var navigate = useNavigate();
+	const data = useSelector((state: RootState) => state.user);
 	useEffect(() => {
 		let elements = document.querySelectorAll(".sidenav");
 		M.Sidenav.init(elements[0]);
@@ -31,16 +36,16 @@ function ProfilePage() {
 						<img src={lamp} />
 					</div>
 					<a><img className="circle" src={lamp} /></a>
-					<a><span className="white-text name">Name</span></a>
-					<a><span className="white-text email"></span></a>
+					<a><span className="white-text name">{data.firstName} {data.lastName}</span></a>
+					<a><span className="white-text email">{data.email}</span></a>
 				</div></li>
-				<li><a className="waves-effect" href="/home">Дом</a></li>
+				<li><a className="waves-effect" onClick={() => navigate("/home")}> Дом</a></li>
 				<li><div className="divider"></div></li>
-				<li><a className="waves-effect" href="/rooms">Комнаты</a></li>
+				<li><a className="waves-effect" onClick={() => navigate("/rooms")}>Комнаты</a></li>
 				<li><div className="divider"></div></li>
-				<li><a className="waves-effect" href="/devices">Устройства</a></li>
+				<li><a className="waves-effect" onClick={() => navigate("/devices")}>Устройства</a></li>
 				<li><div className="divider"></div></li>
-				<li><a className="waves-effect" href="/profile">Профиль</a></li>
+				<li><a className="waves-effect" onClick={() => navigate("/profile")}>Профиль</a></li>
 			</ul>
 
 			<ul id="slide-out" className="sidenav sidenav-fixed small">
@@ -54,9 +59,7 @@ function ProfilePage() {
 			</ul>
 
 			<div className="row profile-row">
-				<div className="col s12 m6">
-					<Profile/>
-				</div>
+				<Profile />
 			</div>
 		</div>
 	)

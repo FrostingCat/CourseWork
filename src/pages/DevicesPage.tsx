@@ -9,6 +9,9 @@ import Modal from "../components/modal";
 import '../css/devicespage.css';
 import '../css/materialize.css';
 import lamp from "../images/lamp.jpg";
+import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../components/store";
 
 enum DeviceType {
 	LAMP = 'Лампа',
@@ -17,8 +20,10 @@ enum DeviceType {
 }
 
 function DevicesPage() {
+	const navigate = useNavigate();
+	const data = useSelector((state: RootState) => state.user);
 	//const [devices, setDevices] = useState<deviceSchema[]>([])
-	
+
 	const [devices, setDevices] = useState<deviceSchema[]>([
 		{
 			_id: '1',
@@ -125,24 +130,27 @@ function DevicesPage() {
 
 	return (
 		<motion.div>
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 			<div>
+				<div className="image">
+					<img className="login-image" src={lamp} />
+				</div>
 				<ul id="slide-out" className="sidenav sidenav-fixed big">
 					<li><div className="user-view">
 						<div className="background">
 							<img src={lamp} />
 						</div>
 						<a><img className="circle" src={lamp} /></a>
-						<a><span className="white-text name">Name</span></a>
-						<a><span className="white-text email"></span></a>
+						<a><span className="white-text name">{data.firstName} {data.lastName}</span></a>
+						<a><span className="white-text email">{data.email}</span></a>
 					</div></li>
-					<li><a className="waves-effect" href="/home">Дом</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/home")}> Дом</a></li>
 					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" href="/rooms">Комнаты</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/rooms")}>Комнаты</a></li>
 					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" href="/devices">Устройства</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/devices")}>Устройства</a></li>
 					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" href="/profile">Профиль</a></li>
+					<li><a className="waves-effect" onClick={() => navigate("/profile")}>Профиль</a></li>
 				</ul>
 
 				<ul id="slide-out" className="sidenav sidenav-fixed small">
@@ -154,12 +162,11 @@ function DevicesPage() {
 						<a><div id="digital-clock"></div></a>
 					</div></li>
 				</ul>
-
 				<h4 className='devices-label'>Мои Устройства</h4>
 
 				<div className="fixed-action-btn plus-btn">
 					<a className="btn-floating btn waves-effect purple darken-1">
-					<i className="large material-icons" onClick={handleModalAddOpen}>add</i>
+						<i className="large material-icons" onClick={handleModalAddOpen}>add</i>
 					</a>
 				</div>
 				<div>

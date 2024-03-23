@@ -75,51 +75,51 @@ const AddDevice: React.FC<Props> = ({ saveDevice }) => {
 
 	return (
 		<div>
-			<div className='Add-Form'>
-				<FormControl>
-					<InputLabel htmlFor='name'>Название</InputLabel>
-					<Input onChange={handleForm} type='text' id='name' />
-				</FormControl>
-				<FormControl>
-					<InputLabel htmlFor='deviceType'>Тип устройства</InputLabel>
-					<Select onChange={handleForm} id='deviceType' name='deviceType'>
+			<div className="card-content">
+				<div className="input-field col s6">
+					<input id="name" type="text" className="validate" onChange={handleForm} />
+					<label htmlFor="name" className="purple-text text-darken-4">Название</label>
+				</div>
+				<div className="input-field col s6">
+					<select onChange={handleForm} id='deviceType' name='deviceType' className="purple-text text-darken-4 select">
+						<option value="" disabled selected>Тип устройства</option>
 						<option value={DeviceType.LAMP}>Лампа</option>
 						<option value={DeviceType.LIGHT}>Лента</option>
 						<option value={DeviceType.CAMERA}>Камера</option>
-					</Select>
-				</FormControl>
-				<Input placeholder="Новая комната" value={newRoom} onChange={(e) => setNewRoom(e.target.value)} />
-				<Button onClick={handleAddRoom}>Добавить</Button>
-				<FormControl>
-					<InputLabel htmlFor='roomNumber'>Выберите комнату</InputLabel>
-					<Select onChange={handleForm} id='roomNumber' name='roomNumber'>
+					</select>
+				</div>
+				<div className="input-field col s6">
+					<input id="name" type="text" className="validate" onChange={(e) => setNewRoom(e.target.value)} />
+					<label htmlFor="name" className="purple-text text-darken-4">Новая комната</label>
+				</div>
+				<div className="buttons">
+					<a className="waves-effect purple darken-1 btn-large button" onClick={handleAddRoom}>
+						Добавить
+					</a>
+				</div>
+				<div className="input-field col s6">
+					<select onChange={handleForm} id='roomNumber' name='roomNumber' className='purple-text text-darken-4 select last'>
+						<option value="" disabled selected>Выберите комнату</option>
 						{rooms.map((room, index) => (
 							<option key={index} value={room}>{room}</option>
 						))}
-					</Select>
-				</FormControl>
-			</div>
-			{/* если время останется */}
-			{/* <div className="col s12 m6">
-				<div className="card white log">
-					<div className="card-content">
-						<span className="card-title">Добавление устройства</span>
-						<div className="input-field col s12">
-							<input id="email" type="email" className="validate" />
-							<label htmlFor="email" className="purple-text text-darken-4">Email</label>
-						</div>
-						<div className="input-field inline">
-							<input id="password_inline" type="password" className="validate" />
-							<label htmlFor="password_inline" className="purple-text text-darken-4">Password</label>
-							<span className="helper-text" data-error="злой пароль" data-success="хороший пароль"></span>
-						</div>
-					</div>
-					<div className="buttons">
-						<a href="/home" className="waves-effect purple darken-1 btn-large button">Войти</a>
-					</div>
+					</select>
 				</div>
-			</div> */}
-			<Button disabled={formData === undefined ? true : false} onClick={(e) => saveDevice(e, formData)}>Добавить</Button>
+			</div>
+			{formData === undefined && (
+				<div className="buttons">
+					<a className="waves-effect purple darken-1 btn-large button disabled">
+						Добавить
+					</a>
+				</div>
+			)}
+			{formData !== undefined && (
+				<div className="buttons" onClick={(e) => saveDevice(e, formData)}>
+					<a className="waves-effect purple darken-1 btn-large button">
+						Добавить
+					</a>
+				</div>
+			)}
 		</div>
 	)
 }

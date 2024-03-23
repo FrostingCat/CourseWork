@@ -4,3 +4,11 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.select {
+	display: block;
+}
+
+.last {
+	margin-bottom: 20px;
+}

@@ -77,9 +77,6 @@ function RegistrationPage() {
 							Регистрация
 						</a>
 					</div>
-					{/* <div className="card-action">
-						<a href="#" className="black-text">Войти</a>
-					</div> */}
 				</div>
 			</div>
 		</div>

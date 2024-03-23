@@ -8,6 +8,7 @@ import '../css/profile.css';
 import lamp from "../images/lamp.jpg";
 import Modal from './modal';
 import { RootState } from './store';
+import { log } from 'console';
 
 function Profile() {
 	const data = useSelector((state: RootState) => state.user);
@@ -50,7 +51,7 @@ function Profile() {
 
 	return (
 		<div className='profile-card'>
-			<div style={{borderRadius: '20px', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.8)'}} className="card">
+			<div style={{ borderRadius: '20px', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.8)' }} className="card">
 				<div className="card-header">
 					<img src={lamp} />
 				</div>
@@ -68,20 +69,21 @@ function Profile() {
 					</a>
 					{isEditProfile && (
 						<Modal title="Изменение данных" onClose={handleEditProfileClose}>
-							<div className='Add-Form'>
-								<FormControl variant="filled">
-									<InputLabel htmlFor='name'>Имя</InputLabel>
-									<Input onChange={handleForm} type='text' id='name' />
-								</FormControl>
-								<FormControl>
-									<InputLabel htmlFor='surname'>Фамилия</InputLabel>
-									<Input onChange={handleForm} type='text' id='surname' />
-								</FormControl>
+							<div className="card-content">
+								<div className="input-field col s6">
+									<input id="name" type="text" className="validate" onChange={handleForm}/>
+									<label htmlFor="name" className="purple-text text-darken-4">Имя</label>
+								</div>
+								<div className="input-field col s6">
+									<input id="surname" type="text" className="validate" onChange={handleForm}/>
+									<label htmlFor="surname" className="purple-text text-darken-4">Фамилия</label>
+								</div>
 							</div>
-							<Button disabled={formData === undefined ? true : false} onClick={(e) =>
-								handleEditUser(e)}>
-								Изменить
-							</Button>
+							<div className="buttons">
+								<a className="waves-effect purple darken-1 btn-large button" onClick={handleEditUser}>
+									Изменить
+								</a>
+							</div>
 						</Modal>
 					)}
 				</div>

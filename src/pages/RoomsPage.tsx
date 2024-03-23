@@ -190,6 +190,10 @@ function RoomsPage() {
 		<motion.div>
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 			<div>
+			<div className="device-image"
+					style={{ backgroundImage: 'url(' + lamp + ')' }}
+				>
+				</div>
 				<ul id="slide-out" className="sidenav sidenav-fixed big">
 					<li><div className="user-view">
 						<div className="background">
@@ -237,7 +241,7 @@ function RoomsPage() {
 					{rooms
 						?.map((room: roomSchema) => (
 							<div className="room-item">
-								<Button key={room._id} onClick={() => handleRoomClick(room._id)} className="people-room" style={{ border: '1px solid #000', borderRadius: 20, background: '' }}>
+								<Button key={room._id} onClick={() => handleRoomClick(room._id)} className="people-room white" style={{ border: '1px solid #000', borderRadius: 20, background: '' }}>
 									{room.name}<br></br>
 								</Button>
 								{/* <Button className="button" type="button" onClick={handleModalOpen}>

@@ -29,20 +29,25 @@ const EditDevice: React.FC<Props> = ({ device, editDevice }) => {
 
 	return (
 		<div>
-			<div className='Add-Form'>
-				<FormControl>
-					<InputLabel htmlFor='name'>Название</InputLabel>
-					<Input onChange={handleForm} type='text' id='name' />
-				</FormControl>
-				<FormControl>
-					<InputLabel htmlFor='deviceType'>Тип устройства</InputLabel>
-					<Select id='deviceType' name='deviceType'>
-						<option value='lamp'>Лампа</option>
-						<option value='light'>Лента</option>
-						<option value='camera'>Камера</option>
-					</Select>
-					<Input onChange={handleForm} type='text' id='material' />
-				</FormControl>
+			<div className="card-content">
+				<div className="input-field col s6">
+					<input id="name" type="text" className="validate" onChange={handleForm} />
+					<label htmlFor="name" className="purple-text text-darken-4">Название</label>
+				</div>
+				<div className="input-field col s6">
+					<select onChange={handleForm} id='deviceType' name='deviceType' className="purple-text text-darken-4 select">
+						<option value="" disabled selected>Тип устройства</option>
+						<option value={DeviceType.LAMP}>Лампа</option>
+						<option value={DeviceType.LIGHT}>Лента</option>
+						<option value={DeviceType.CAMERA}>Камера</option>
+					</select>
+				</div>
+				<div className="buttons">
+					<a className="waves-effect purple darken-1 btn-large button" onClick={(e) =>
+						editDevice(e, device._id, formData)}>
+						Изменить
+					</a>
+				</div>
 			</div>
 			<Button disabled={formData === undefined ? true : false} onClick={(e) =>
 				editDevice(e, device._id, formData)}>

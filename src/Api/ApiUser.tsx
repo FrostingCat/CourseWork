@@ -56,7 +56,6 @@ export const editUser = async (
 	formData: userProfileSchema,
 	email: string
 ): Promise<AxiosResponse<null>> => {
-	console.log({ formData })
 	const user: userEditSchema = {
 		name: formData.name,
 		surname: formData.surname,

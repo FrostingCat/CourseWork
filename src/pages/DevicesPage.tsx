@@ -132,8 +132,9 @@ function DevicesPage() {
 		<motion.div>
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 			<div>
-				<div className="image">
-					<img className="login-image" src={lamp} />
+				<div className="device-image"
+					style={{ backgroundImage: 'url(' + lamp + ')' }}
+				>
 				</div>
 				<ul id="slide-out" className="sidenav sidenav-fixed big">
 					<li><div className="user-view">
@@ -171,7 +172,7 @@ function DevicesPage() {
 				</div>
 				<div>
 					{isModalAddActive && (
-						<Modal title="Добавление" onClose={handleModalAddClose}>
+						<Modal title="Добавление устройства" onClose={handleModalAddClose}>
 							<AddDevice saveDevice={handleSaveDevice} />
 						</Modal>
 					)}

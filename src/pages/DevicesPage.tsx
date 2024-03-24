@@ -13,7 +13,7 @@ import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../components/store";
 
-enum DeviceType {
+enum type {
 	LAMP = 'Лампа',
 	LIGHT = 'Лента',
 	CAMERA = 'Камера'
@@ -22,77 +22,54 @@ enum DeviceType {
 function DevicesPage() {
 	const navigate = useNavigate();
 	const data = useSelector((state: RootState) => state.user);
-	//const [devices, setDevices] = useState<deviceSchema[]>([])
-
-	const [devices, setDevices] = useState<deviceSchema[]>([
-		{
-			_id: '1',
-			room_id: '1',
-			name: "Устройство 1",
-			deviceType: DeviceType.CAMERA,
-			state: false
-		},
-		{
-			_id: '2',
-			room_id: '1',
-			name: "Устройство 2",
-			deviceType: DeviceType.LAMP,
-			state: false
-		},
-		{
-			_id: '3',
-			room_id: '2',
-			name: "Устройство 3",
-			deviceType: DeviceType.LIGHT,
-			state: false
-		}
-	]);
+	const [devices, setDevices] = useState<deviceGetSchema[]>([])
 	const [isModalAddActive, setModalAddActive] = useState(false);
 
-	const checkFormData = (formData: deviceSchema): boolean => {
-		if (!formData.name || !formData.deviceType) {
+	const checkFormData = (formData: deviceAddSchema): boolean => {
+		if (!formData.name || !formData.type || !formData.ip) {
 			alert("Fill in all the fields");
 			return false
 		}
 		return true
 	}
 
-	const handleSaveDevice = (e: React.FormEvent, formData: deviceSchema): void => {
+	const handleSaveDevice = (e: React.FormEvent, formData: deviceAddSchema): void => {
 		e.preventDefault()
 		if (checkFormData(formData)) {
 			addDevice(formData)
 				.then(({ status, data }) => {
-					if (status !== 200) {
+					if (status !== 201) {
 						alert("Error! Device not saved")
 					}
-					console.log(data.device, { data })
-					setDevices(data.device)
+					setDevices(data.device as deviceGetSchema[])
+					fetchDevices()
 				})
 				.catch(err => console.log(err))
 		}
-		console.log("error")
 	}
 
-	const handleEditDevice = (e: React.FormEvent, _id: string, formData: deviceSchema): void => {
+	const handleEditDevice = (e: React.FormEvent, id: string, formData: deviceSchema): void => {
 		e.preventDefault()
-		editDevice(_id, formData)
+		editDevice(id, formData)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not edited")
 				}
 				console.log(data.device, { data })
-				setDevices(data.device)
+				setDevices(data.device as deviceGetSchema[])
+				fetchDevices()
 			})
 			.catch(err => console.log(err))
 	}
 
-	const handleDeleteDevice = (_id: string): void => {
-		deleteDevice(_id)
+	const handleDeleteDevice = (id: number): void => {
+		deleteDevice(id)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not deleted")
 				}
-				setDevices(data.device)
+				setDevices(data.device as deviceGetSchema[])
+				fetchDevices()
 			})
 			.catch(err => console.log(err))
 	}
@@ -112,13 +89,14 @@ function DevicesPage() {
 		});
 		var elems = document.querySelectorAll('.fixed-action-btn');
 		M.FloatingActionButton.init(elems);
-		//fetchDevices()
+		fetchDevices()
 	}, []);
 
 	const fetchDevices = (): void => {
 		getDevices()
-			.then(({ data: { data } }: deviceSchema[] | any) => {
-				setDevices(data)
+			.then(( response) => {
+				console.log(response.data)
+				setDevices(response.data)
 			})
 			.catch((err: Error) => console.log(err))
 	}
@@ -183,7 +161,7 @@ function DevicesPage() {
 						?.map((device: deviceSchema) => (
 							<div>
 								<DeviceItem
-									key={device._id}
+									key={device.id}
 									deleteDevice={handleDeleteDevice}
 									editDevice={handleEditDevice}
 									device={device}
@@ -192,21 +170,6 @@ function DevicesPage() {
 						))}
 				</AnimatePresence>
 
-				{/* <div className="row device-card">
-				<div className="col s12 m6">
-					<div className="card deep-purple lighten-4">
-						<div className="card-content">
-							<span className="card-title">Профиль</span>
-							<p>Имя Фамилия</p>
-							<p>Почта</p>
-						</div>
-						<div className="card-action">
-							<a href="/" className="waves-effect pink darken-3 btn-large button but-1">Выйти</a>
-							<a href="/edit" className="waves-effect purple darken-1 btn-large button">Редактировать</a>
-						</div>
-					</div>
-				</div>
-			</div> */}
 			</div>
 		</motion.div>
 	)

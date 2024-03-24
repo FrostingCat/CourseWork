@@ -2,66 +2,37 @@ import '../css/devicespage.css'
 import '../css/materialize.css'
 import M from 'materialize-css'
 import lamp from "../images/lamp.jpg"
-import React, { useEffect, useState } from 'react';
-import { getRooms, addRoom, deleteRoom, editRoom } from '../Api/ApiRooms'
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import { motion, AnimatePresence } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import { Button, Typography } from '@material-ui/core'
+import React, {useEffect, useState} from 'react';
+import {addRoom, deleteRoom, editRoom, getRooms} from '../Api/ApiRooms'
+import {motion} from "framer-motion";
+import {useNavigate} from "react-router-dom";
+import {Button} from '@material-ui/core'
 import Modal from "../components/modal";
-import RoomItem from '../components/RoomsItem'
-import EditRoom from '../components/EditRoom';
 import AddRoom from '../components/AddRoom';
-import { getDateTime } from '../components/DateUtil';
-import { deleteDevice, editDevice, getDevicesByRoomId } from '../Api/ApiDevices';
+import {getDateTime} from '../components/DateUtil';
+import {deleteDevice, editDevice, getDevicesByRoomId} from '../Api/ApiDevices';
 import DeviceItem from '../components/DeviceItem'
-import { useSelector } from 'react-redux';
-import { RootState } from '../components/store';
+import {useSelector} from 'react-redux';
+import {RootState} from '../components/store';
 
-enum DeviceType {
+enum type {
 	LAMP = 'Лампа',
 	LIGHT = 'Лента',
 	CAMERA = 'Камера'
 }
 
+const e_mail = "julia@mail.ru"
+const hash_password = "$2b$10$AAOFrjbRj8B5t6JVkUWNdu5.LiEB4cXCaJ6s6TcWqE8SH5FzlfmPy"
+
 function RoomsPage() {
 	var navigate = useNavigate();
 	const data = useSelector((state: RootState) => state.user);
-	const [rooms, setRooms] = useState<roomSchema[]>([
-		{
-			_id: "1",
-			name: "Комната 1"
-		},
-		{
-			_id: "2",
-			name: "Комната 2"
-		},
-		{
-			_id: "3",
-			name: "Комната 3"
-		},
-	])
+	const [rooms, setRooms] = useState<roomSchema[]>([])
 	const [isModalActive, setModalActive] = useState(false);
 	const [isModalAddActive, setModalAddActive] = useState(false);
 	const [selectedRoom, setSelectedRoom] = useState('');
-	const [devices, setDevices] = useState<deviceSchema[]>([])
-	const [roomElements, setRoomElements] = useState<deviceSchema[]>([
-		{
-			_id: '1',
-			room_id: '1',
-			name: "Устройство 1",
-			deviceType: DeviceType.CAMERA,
-			state: false
-		},
-		{
-			_id: '2',
-			room_id: '1',
-			name: "Устройство 2",
-			deviceType: DeviceType.LAMP,
-			state: false
-		}
-	]);
+	const [devices, setDevices] = useState<deviceSchema[]>([]);
+	const [roomElements, setRoomElements] = useState<deviceSchema[]>([]);
 
 	const checkFormData = (formData: roomSchema): boolean => {
 		if (!formData.name) {
@@ -74,39 +45,39 @@ function RoomsPage() {
 	const handleSaveRoom = (e: React.FormEvent, formData: roomSchema): void => {
 		e.preventDefault()
 		if (checkFormData(formData)) {
-			addRoom(formData)
+			addRoom(e_mail, hash_password, formData.name)
 				.then(({ status, data }) => {
 					if (status !== 200) {
 						alert("Error! Room not saved")
 					}
 					console.log(data.room, { data })
-					setRooms(data.room)
+					setRooms(data.room as roomSchema[])
 				})
 				.catch(err => console.log(err))
 		}
 		console.log("error")
 	}
 
-	const handleEditRoom = (e: React.FormEvent, _id: string, formData: roomSchema): void => {
+	const handleEditRoom = (e: React.FormEvent, id: string, formData: roomSchema): void => {
 		e.preventDefault()
-		editRoom(_id, formData)
+		editRoom(id, formData)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Room not edited")
 				}
 				console.log(data.room, { data })
-				setRooms(data.room)
+				setRooms(data.room as roomSchema[])
 			})
 			.catch(err => console.log(err))
 	}
 
-	const handleDeleteRoom = (_id: string): void => {
-		deleteRoom(_id)
+	const handleDeleteRoom = (id: string): void => {
+		deleteRoom(id)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Room not deleted")
 				}
-				setRooms(data.room)
+				setRooms(data.room as roomSchema[])
 			})
 			.catch(err => console.log(err))
 	}
@@ -125,39 +96,39 @@ function RoomsPage() {
 		setModalAddActive(false);
 	};
 
-	const handleRoomClick = (roomId: string) => {
-		setSelectedRoom(roomId);
-		fetchDevicesById(roomId);
+	const handleRoomClick = (room_id: string) => {
+		setSelectedRoom(room_id);
+		fetchDevicesById(room_id);
 	};
 
-	const fetchDevicesById = (_id: string): void => {
-		getDevicesByRoomId(_id)
+	const fetchDevicesById = (id: string): void => {
+		getDevicesByRoomId(id)
 			.then(({ data: { data } }: deviceSchema[] | any) => {
 				setRoomElements(data)
 			})
 			.catch((err: Error) => console.log(err))
 	}
 
-	const handleEditDevice = (e: React.FormEvent, _id: string, formData: deviceSchema): void => {
+	const handleEditDevice = (e: React.FormEvent, id: string, formData: deviceSchema): void => {
 		e.preventDefault()
-		editDevice(_id, formData)
+		editDevice(id, formData)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not edited")
 				}
 				console.log(data.device, { data })
-				setDevices(data.device)
+				setDevices(data.device as deviceSchema[])
 			})
 			.catch(err => console.log(err))
 	}
 
-	const handleDeleteDevice = (_id: string): void => {
-		deleteDevice(_id)
+	const handleDeleteDevice = (id: number): void => {
+		deleteDevice(id)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not deleted")
 				}
-				setDevices(data.device)
+				setDevices(data.device as deviceSchema[])
 			})
 			.catch(err => console.log(err))
 	}
@@ -170,7 +141,7 @@ function RoomsPage() {
 		});
 		var elems = document.querySelectorAll('.fixed-action-btn');
 		M.FloatingActionButton.init(elems);
-		//fetchRooms()
+		fetchRooms()
 	}, []);
 
 	const fetchRooms = (): void => {
@@ -241,7 +212,7 @@ function RoomsPage() {
 					{rooms
 						?.map((room: roomSchema) => (
 							<div className="room-item">
-								<Button key={room._id} onClick={() => handleRoomClick(room._id)} className="people-room white" style={{ border: '1px solid #000', borderRadius: 20, background: '' }}>
+								<Button key={room.id} onClick={() => handleRoomClick(room.id)} className="people-room white" style={{ border: '1px solid #000', borderRadius: 20, background: '' }}>
 									{room.name}<br></br>
 								</Button>
 								{/* <Button className="button" type="button" onClick={handleModalOpen}>
@@ -274,7 +245,7 @@ function RoomsPage() {
 						{roomElements.map((device) => (
 							<div>
 								<DeviceItem
-									key={device._id}
+									key={device.id}
 									deleteDevice={handleDeleteDevice}
 									editDevice={handleEditDevice}
 									device={device}

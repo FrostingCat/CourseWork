@@ -5,7 +5,7 @@ import Portal, { createContainer } from "./portal";
 
 import Styles from "./index.module.css";
 
-const MODAL_CONTAINER_ID = "modal-container-id";
+const MODAL_CONTAINERid = "modal-container-id";
 
 type Props = {
   title: string;
@@ -20,7 +20,7 @@ const Modal = (props: Props) => {
   const [isMounted, setMounted] = useState(false);
 
   useEffect(() => {
-    createContainer({ id: MODAL_CONTAINER_ID });
+    createContainer({ id: MODAL_CONTAINERid });
     setMounted(true);
   }, []);
 
@@ -54,7 +54,7 @@ const Modal = (props: Props) => {
   }, [onClose]);
 
   return isMounted ? (
-    <Portal id={MODAL_CONTAINER_ID}>
+    <Portal id={MODAL_CONTAINERid}>
       <div className={Styles.wrap} ref={rootRef} data-testid="wrap">
         <div className={Styles.content}>
           <button

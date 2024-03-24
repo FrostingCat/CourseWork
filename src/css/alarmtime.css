@@ -1,3 +1,7 @@
 .time-picker {
-	margin-top: 20%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.switch-time {
+	margin-bottom: 30px;
 }

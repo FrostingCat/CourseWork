@@ -1,127 +1,120 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate, Navigate } from "react-router-dom";
-import { Button, FormControl, Select, InputLabel, Input } from '@material-ui/core'
+import React, {useEffect, useState} from 'react'
 import '../css/adddevice.css'
-import { getRooms } from '../Api/ApiRooms';
+import {addRoom, getRooms} from '../Api/ApiRooms';
 
 type Props = {
-	saveDevice: (e: React.FormEvent, formData: deviceSchema) => void
+    saveDevice: (e: React.FormEvent, formData: deviceAddSchema) => void
 }
 
-enum DeviceType {
-	LAMP = 'Лампа',
-	LIGHT = 'Лента',
-	CAMERA = 'Камера'
+enum type {
+    LAMP = 'Лампа',
+    LIGHT = 'Лента',
+    CAMERA = 'Камера'
 }
 
-const AddDevice: React.FC<Props> = ({ saveDevice }) => {
-	const [rooms, setRooms] = useState<string[]>(["Комната 1", "Комната 2", "Комната 3"]);
-	const [newRoom, setNewRoom] = useState("");
-	const [errorMessage, setErrorMessage] = useState("")
-	const navigate = useNavigate()
+const e_mail = "julia@mail.ru"
+const hash_password = "$2b$10$AAOFrjbRj8B5t6JVkUWNdu5.LiEB4cXCaJ6s6TcWqE8SH5FzlfmPy"
 
-	const [formData, setFormData] = useState<deviceSchema>({
-		_id: '',
-		room_id: '',
-		name: "",
-		deviceType: DeviceType.CAMERA,
-		state: false
-	});
+const AddDevice: React.FC<Props> = ({saveDevice}) => {
+    const [rooms, setRooms] = useState<roomSchema[]>([]);
+    const [errorMessage, setErrorMessage] = useState("")
+    const [formData, setFormData] = useState<deviceAddSchema>({
+        e_mail: '',
+        hash_password: '',
+        name: '',
+        type: type.CAMERA,
+        room_id: 0,
+        ip: ''
+    });
 
-	useEffect(() => {
-		//fetchRooms()
-	}, []);
+    useEffect(() => {
+        fetchRooms()
+    }, []);
 
-	const fetchRooms = (): void => {
-		getRooms()
-			.then(({ data: { data } }: roomSchema[] | any) => {
-				setRooms(data)
-			})
-			.catch((err: Error) => console.log(err))
-	}
+    const fetchRooms = (): void => {
+        getRooms()
+            .then((response) => {
+                setRooms(response.data)
+            })
+            .catch((err: Error) => console.log(err))
+    }
 
-	function handleForm(e: any): void {
-		const key = e.currentTarget.id;
+    function handleForm(e: any): void {
+        setFormData({
+            ...formData,
+            [e.currentTarget.id]: e.currentTarget.value
+        })
+    }
 
-		setFormData({
-			...formData,
-			[e.currentTarget.id]: e.currentTarget.value,
-		})
-	}
+    const handleSaveRoom = (): void => {
+        const roomInput = document.getElementById('room') as HTMLInputElement;
+        const room = roomInput.value;
+        addRoom(e_mail, hash_password, room)
+            .then(({status, data}) => {
+                if (status !== 201) {
+                    alert("Error! Room not saved")
+                }
+                console.log(data.room, {data})
+                fetchRooms()
+            })
+            .catch(err => console.log(err))
+    }
 
-	const handleAddRoom = () => {
-		if (newRoom.trim() !== "") {
-			//handleSaveRoom()
-			setRooms([...rooms, newRoom.trim()]);
-			setNewRoom("");
-		}
-	};
-
-	// const handleSaveRoom = (e: React.FormEvent, formData: roomSchema): void => {
-	// 	e.preventDefault()
-	// 	if (checkFormData(formData)) {
-	// 		addRoom(formData)
-	// 			.then(({ status, data }) => {
-	// 				if (status !== 200) {
-	// 					alert("Error! Room not saved")
-	// 				}
-	// 				console.log(data.room, { data })
-	// 				setRooms(data.room)
-	// 			})
-	// 			.catch(err => console.log(err))
-	// 	}
-	// 	console.log("error")
-	// }
-
-	return (
-		<div>
-			<div className="card-content">
-				<div className="input-field col s6">
-					<input id="name" type="text" className="validate" onChange={handleForm} />
-					<label htmlFor="name" className="purple-text text-darken-4">Название</label>
-				</div>
-				<div className="input-field col s6">
-					<select onChange={handleForm} id='deviceType' name='deviceType' className="purple-text text-darken-4 select">
-						<option value="" disabled selected>Тип устройства</option>
-						<option value={DeviceType.LAMP}>Лампа</option>
-						<option value={DeviceType.LIGHT}>Лента</option>
-						<option value={DeviceType.CAMERA}>Камера</option>
-					</select>
-				</div>
-				<div className="input-field col s6">
-					<input id="name" type="text" className="validate" onChange={(e) => setNewRoom(e.target.value)} />
-					<label htmlFor="name" className="purple-text text-darken-4">Новая комната</label>
-				</div>
-				<div className="buttons">
-					<a className="waves-effect purple darken-1 btn-large button" onClick={handleAddRoom}>
-						Добавить
-					</a>
-				</div>
-				<div className="input-field col s6">
-					<select onChange={handleForm} id='roomNumber' name='roomNumber' className='purple-text text-darken-4 select last'>
-						<option value="" disabled selected>Выберите комнату</option>
-						{rooms.map((room, index) => (
-							<option key={index} value={room}>{room}</option>
-						))}
-					</select>
-				</div>
-			</div>
-			{formData === undefined && (
-				<div className="buttons">
-					<a className="waves-effect purple darken-1 btn-large button disabled">
-						Добавить
-					</a>
-				</div>
-			)}
-			{formData !== undefined && (
-				<div className="buttons" onClick={(e) => saveDevice(e, formData)}>
-					<a className="waves-effect purple darken-1 btn-large button">
-						Добавить
-					</a>
-				</div>
-			)}
-		</div>
-	)
+    return (
+        <div>
+            <div className="card-content">
+                <div className="input-field col s6">
+                    <input id="name" type="text" className="validate" onChange={handleForm}/>
+                    <label htmlFor="name" className="purple-text text-darken-4">Название</label>
+                </div>
+                <div className="input-field col s6">
+                    <select onChange={handleForm} id='type' name='type'
+                            className="purple-text text-darken-4 select">
+                        <option value="" disabled selected>Тип устройства</option>
+                        <option value={type.LAMP}>Лампа</option>
+                        <option value={type.LIGHT}>Лента</option>
+                        <option value={type.CAMERA}>Камера</option>
+                    </select>
+                </div>
+                <div className="input-field col s6">
+                    <input id="room" type="text" className="validate"/>
+                    <label htmlFor="room" className="purple-text text-darken-4">Новая комната</label>
+                </div>
+                <div className="buttons">
+                    <a className="waves-effect purple darken-1 btn-large button" onClick={handleSaveRoom}>
+                        Добавить
+                    </a>
+                </div>
+                <div className="input-field col s6">
+                    <select onChange={handleForm} id='room_id' name='room_id'
+                            className='purple-text text-darken-4 select last'>
+                        <option value="" disabled selected>Выберите комнату</option>
+                        {rooms.map((room, index) => (
+                            <option key={index} value={room.id}>{room.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="input-field col s6">
+                    <input id="ip" type="text" className="validate" onChange={handleForm}/>
+                    <label htmlFor="ip" className="purple-text text-darken-4">IP</label>
+                </div>
+            </div>
+            {formData === undefined && (
+                <div className="buttons">
+                    <a className="waves-effect purple darken-1 btn-large button disabled">
+                        Добавить
+                    </a>
+                </div>
+            )}
+            {formData !== undefined && (
+                <div className="buttons" onClick={(e) => saveDevice(e, formData)}>
+                    <a className="waves-effect purple darken-1 btn-large button">
+                        Добавить
+                    </a>
+                </div>
+            )}
+        </div>
+    )
 }
 
 export default AddDevice

@@ -18,6 +18,7 @@ function ProfilePage() {
 		M.Sidenav.init(elements[1], {
 			edge: "right"
 		});
+
 	}, []);
 
 	setInterval(function () {

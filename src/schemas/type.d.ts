@@ -1,12 +1,49 @@
 interface deviceSchema {
-	_id: string
+	id: string
 	room_id: string
 	name: string
-	deviceType: DeviceType
+	type: type
 	state: boolean
 }
 
-enum DeviceType {
+interface deviceGetSchema {
+	id: string
+	name: string
+	room_id: string
+	state: boolean
+	type: type
+	time: string | null
+	alarm_lamp: boolean
+	alarm_time: string | null
+}
+
+interface deviceEditSchema {
+	e_mail: string,
+	hash_password: string,
+	id: number
+	room_id: string
+	name: string
+	type: type
+}
+
+type ApiSimpleDeviceDataType = deviceGetSchema[]
+
+interface deviceAddSchema {
+	e_mail: string,
+	hash_password: string,
+	room_id: number
+	name: string
+	type: type,
+	ip: string
+}
+
+interface deviceDeleteSchema {
+	e_mail: string
+	hash_password: string
+	device_id: number
+}
+
+enum type {
 	LAMP = 'Лампа',
 	LIGHT = 'Лента',
 	CAMERA = 'Камера'
@@ -19,12 +56,11 @@ interface deviceProps {
 type ApiDeviceDataType = {
 	message: string
 	status: string
-	device: deviceSchema[]
-	device?: deviceSchema
+	device?: deviceSchema[]
 }
 
 interface roomSchema {
-	_id: string
+	id: string
 	name: string
 }
 
@@ -35,7 +71,13 @@ interface roomProps {
 type ApiRoomDataType = {
 	message: string
 	status: string
-	room: roomSchema[]
-	room?: roomSchema
+	room?: roomSchema[]
 }
 
+type ApiSimpleRoomDataType = roomSchema[]
+
+interface roomAddSchema {
+	e_mail: string,
+	hash_password: string,
+	name: string
+}

@@ -1,16 +1,11 @@
 interface checkCodeSchema {
-	email: string
-}
-
-interface codeSchema {
-	code: string
+	e_mail: string
 }
 
 type ApiCodeDataType = {
 	message: string
 	status: string
-	code: codeSchema
-	code?: codeSchema
+	code?: string
 }
 
 interface userRegisterSchema {
@@ -33,7 +28,6 @@ interface userRetAuthSchema {
 type ApiAuthDataType = {
 	message: string
 	status: string
-	code: userRetAuthSchema
 	code?: userRetAuthSchema
 }
 
@@ -46,4 +40,9 @@ interface userEditSchema {
 	name: string
 	surname: string
 	e_mail: string
+}
+
+interface userTokenSchema {
+	access_token: string
+	token_type: string
 }

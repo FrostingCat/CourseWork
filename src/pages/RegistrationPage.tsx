@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { checkCodeUser } from '../Api/ApiUser';
+import {checkCodeUser, salt} from '../Api/ApiUser';
 import { addCode, addEmail, addFirstName, addLastName, addPassword } from '../components/codeSlice';
 import '../css/registration.css';
 import lamp from "../images/lampLogin.jpg";
@@ -25,8 +25,6 @@ function RegistrationPage() {
 		dispatch(addLastName(lastName));
 		dispatch(addEmail(email));
 
-		const salt = bcrypt.genSaltSync(10);
-
 		const hashedPassword = bcrypt.hashSync(password, salt);
 		dispatch(addPassword(hashedPassword));
 
@@ -37,7 +35,8 @@ function RegistrationPage() {
 				if (status === 502) {
 					throw new Error("Error! User is not registered")
 				}
-				dispatch(addCode(data.code.code));
+				const code = data.code!!;
+				dispatch(addCode(code));
 				//
 			})
 			.catch(err => console.log(err))

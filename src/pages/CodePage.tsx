@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { createUser } from '../Api/ApiUser';
-import { RootState } from '../components/store';
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {createUser} from '../Api/ApiUser';
+import {RootState} from '../components/store';
 import '../css/login.css';
 import lamp from "../images/lampLogin.jpg";
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 function CodePage() {
 	const [errorMessage, setErrorMessage] = useState<string>("");
@@ -23,14 +23,12 @@ function CodePage() {
 				if (status !== 201) {
 					throw new Error("Error! User is not registered")
 				}
-				//navigate('/home');
+				navigate('/home');
 			})
 			.catch(err => console.log(err))
 		} else {
 			setErrorMessage("Введен неверный код");
 		}
-
-		navigate('/home');
 	}
 
 	return (

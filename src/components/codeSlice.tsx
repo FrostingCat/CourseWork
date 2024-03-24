@@ -27,7 +27,7 @@ export const code = createSlice({
             state.lastName = action.payload;
         },
 		addCode: (state, action: PayloadAction<string>) => {
-            state.code = action.payload;
+            state.code = action.payload.toString();
         },
 		addEmail: (state, action: PayloadAction<string>) => {
             state.email = action.payload;

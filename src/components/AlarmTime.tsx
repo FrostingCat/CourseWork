@@ -21,7 +21,7 @@ const AlarmTime: React.FC<Props> = ({ device }) => {
 		const hour = time?.get('hour');
 		const minute = time?.get('minute');
 		var timeString = hour + ':' + minute;
-		manageAlarm(device._id, isOn, timeString)
+		manageAlarm(device.id, isOn, timeString)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not managed")
@@ -31,11 +31,17 @@ const AlarmTime: React.FC<Props> = ({ device }) => {
 	}
 
 	return (
-		<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '200px' }}>
-			<div className="switch">
+		<div style={{
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+			justifyContent: 'center',
+			minHeight: '200px'
+		}}>
+			<div className="switch switch-time">
 				<label>
 					Off
-					<input type="checkbox" onChange={handleState} />
+					<input type="checkbox" onChange={handleState}/>
 					<span className="lever"></span>
 					On
 				</label>
@@ -49,10 +55,11 @@ const AlarmTime: React.FC<Props> = ({ device }) => {
 					/>
 				</LocalizationProvider>
 			</div>
-			<Button disabled={time === dayjs('2022-04-17T15:30') ? true : false} onClick={(e) =>
-				editAlarm()}>
-				Изменить
-			</Button>
+			<div className="buttons">
+				<a className="waves-effect purple darken-1 btn-large button" onClick={editAlarm}>
+					Изменить
+				</a>
+			</div>
 		</div>
 	);
 };

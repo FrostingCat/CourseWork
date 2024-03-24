@@ -5,10 +5,10 @@ import { deleteDevice, editDevice, getDevicesByRoomId } from '../Api/ApiDevices'
 import DeviceItem from '../components/DeviceItem'
 
 type Props = roomProps & {
-	deleteRoom: (_id: string) => void
+	deleteRoom: (id: string) => void
 }
 
-enum DeviceType {
+enum type {
 	LAMP = 'Лампа',
 	LIGHT = 'Лента',
 	CAMERA = 'Камера'
@@ -17,42 +17,42 @@ enum DeviceType {
 const Item: React.FC<Props> = ({ room, deleteRoom }) => {
 	const [devices, setDevices] = useState<deviceSchema[]>([
 		{
-			_id: '1',
+			id: '1',
 			room_id: '1',
 			name: "Устройство 1",
-			deviceType: DeviceType.CAMERA,
+			type: type.CAMERA,
 			state: false
 		},
 		{
-			_id: '2',
+			id: '2',
 			room_id: '1',
 			name: "Устройство 2",
-			deviceType: DeviceType.LAMP,
+			type: type.LAMP,
 			state: false
 		}
 	]);
 
 
-	const handleEditDevice = (e: React.FormEvent, _id: string, formData: deviceSchema): void => {
+	const handleEditDevice = (e: React.FormEvent, id: string, formData: deviceSchema): void => {
 		e.preventDefault()
-		editDevice(_id, formData)
+		editDevice(id, formData)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not edited")
 				}
 				console.log(data.device, { data })
-				setDevices(data.device)
+				setDevices(data.device as deviceSchema[])
 			})
 			.catch(err => console.log(err))
 	}
 
-	const handleDeleteDevice = (_id: string): void => {
-		deleteDevice(_id)
+	const handleDeleteDevice = (id: number): void => {
+		deleteDevice(id)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not deleted")
 				}
-				setDevices(data.device)
+				setDevices(data.device as deviceSchema[])
 			})
 			.catch(err => console.log(err))
 	}
@@ -66,7 +66,7 @@ const Item: React.FC<Props> = ({ room, deleteRoom }) => {
 				?.map((device: deviceSchema) => (
 					<div>
 						<DeviceItem
-							key={device._id}
+							key={device.id}
 							deleteDevice={handleDeleteDevice}
 							editDevice={handleEditDevice}
 							device={device}

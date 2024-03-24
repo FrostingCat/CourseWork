@@ -12,7 +12,7 @@ const ColorPicker: React.FC<Props> = ({device}) => {
   };
 
   const handleManageLight = (): void => {
-	manageLight(device._id, color)
+	manageLight(device.id, color, true)
 		.then(({ status, data }) => {
 			if (status !== 200) {
 				throw new Error("Error! Device not managed")

@@ -1,16 +1,22 @@
 import axios, { AxiosResponse } from "axios"
 
-const baseUrl = "todo"
+const baseUrl = "http://127.0.0.1:8000"
+const usersPrefix = "users"
+export const salt = "$2b$10$AAOFrjbRj8B5t6JVkUWNdu"
+
+// export const getUser = async (
+//
+// )
 
 export const checkCodeUser = async (
 	email: string
 ): Promise<AxiosResponse<ApiCodeDataType>> => {
 	const user: checkCodeSchema = {
-		email: email
+		e_mail: email
 	}
 	console.log(user)
 	const code: AxiosResponse<ApiCodeDataType> = await axios.post(
-		baseUrl + "/user/validate_email",
+		baseUrl + `/${usersPrefix}/validate_email`,
 		user
 	)
 	return code
@@ -28,9 +34,9 @@ export const createUser = async (
 		e_mail: email,
 		hash_password: password
 	}
-	console.log(user)
+	console.table(user)
 	const saveUser: AxiosResponse<null> = await axios.post(
-		baseUrl + "/user/register",
+		baseUrl + `/${usersPrefix}/register`,
 		user
 	)
 	return saveUser
@@ -46,7 +52,7 @@ export const authorizeUser = async (
 	}
 	console.log(user)
 	const authUser: AxiosResponse<userRetAuthSchema> = await axios.post(
-		baseUrl + "/user/authorize",
+		baseUrl + `/${usersPrefix}/authorize`,
 		user
 	)
 	return authUser
@@ -63,8 +69,24 @@ export const editUser = async (
 	}
 	console.table(user)
 	const editUser: AxiosResponse<null> = await axios.put(
-		`${baseUrl}/user/update`,
+		`${baseUrl}/${usersPrefix}/update`,
 		user
 	)
 	return editUser
+}
+
+
+export const getToken = async (
+	email: string,
+	password: string,
+): Promise<AxiosResponse<userTokenSchema>> => {
+	const user: userAuthorizeSchema = {
+		e_mail: email,
+		hash_password: password
+	}
+	console.log(user)
+	return await axios.post(
+		baseUrl + `/${usersPrefix}/token`,
+		user
+	)
 }

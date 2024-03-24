@@ -1,14 +1,12 @@
-import { Button, FormControl, Input, InputLabel } from '@material-ui/core';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { editUser } from '../Api/ApiUser';
-import { addEmail, addFirstName, addLastName } from '../components/codeSlice';
+import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {editUser} from '../Api/ApiUser';
+import {addEmail, addFirstName, addLastName} from './codeSlice';
 import '../css/materialize.css';
 import '../css/profile.css';
 import lamp from "../images/lamp.jpg";
 import Modal from './modal';
-import { RootState } from './store';
-import { log } from 'console';
+import {RootState} from './store';
 
 function Profile() {
 	const data = useSelector((state: RootState) => state.user);
@@ -32,7 +30,7 @@ function Profile() {
 		editUser(formData, data.email)
 			.then(({ status }) => {
 				if (status !== 200) {
-					throw new Error("Error! Device not edited")
+					throw new Error("Error! User not edited")
 				}
 				dispatch(addFirstName(formData.name));
 				dispatch(addLastName(formData.surname));

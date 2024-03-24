@@ -1,15 +1,21 @@
+interface lightSchema {
+	id: string
+	color: string
+	state: boolean
+}
+
 interface alarmSchema {
-	_id: string
+	id: string
 	state: boolean
 	time: string
 }
 
 interface lampSchema {
-	_id: string
+	id: string
 	state: boolean
 }
 
 interface timeSchema {
-	_id: string
+	id: string
 	time: string
 }

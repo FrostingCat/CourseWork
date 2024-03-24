@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { authorizeUser } from '../Api/ApiUser';
+import {authorizeUser, getToken, salt} from '../Api/ApiUser';
 import { addEmail, addFirstName, addLastName } from '../components/codeSlice';
 import '../css/login.css';
 import lamp from "../images/lampLogin.jpg";
+import bcrypt from "bcryptjs";
 
 function LoginPage() {
 	const [errorMessage, setErrorMessage] = useState<string>("");
@@ -18,9 +19,11 @@ function LoginPage() {
 		const email = emailInput.value;
 		const password = passwordInput.value;
 
-		authorizeUser(email, password)
+		const hashedPassword = bcrypt.hashSync(password, salt);
+
+		authorizeUser(email, hashedPassword)
 			.then(({ status, data }) => {
-				if (status !== 201) {
+				if (status !== 200) {
 					setErrorMessage("Неправильная почта или пароль");
 					throw new Error("Error! User is not registered")
 				}
@@ -56,9 +59,6 @@ function LoginPage() {
 							Войти
 						</a>
 					</div>
-					{/* <div className="card-action">
-						<a href="#" className="black-text">Войти</a>
-					</div> */}
 				</div>
 			</div>
 		</div>

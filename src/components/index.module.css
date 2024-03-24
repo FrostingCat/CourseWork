@@ -10,15 +10,15 @@
 	align-items: center;
 	justify-content: center;
   }
-  
+
   .content {
-	border: 1px solid;
 	position: relative;
 	background: rgba(255, 255, 255, 1);
 	border-radius: 5px;
 	padding: 10px 40px 20px 20px;
+    box-shadow: 1px 1px 14px 2px #808080;
   }
-  
+
   .closeButton {
 	position: absolute;
 	width: 40px;
@@ -32,16 +32,14 @@
 	background: none;
 	color: rgb(0, 0, 0, 0.6);
   }
-  
+
   .closeButton:hover {
 	color: rgb(0, 0, 0, 1);
   }
-  
+
   .title {
 	margin: 0 0 10px;
-	font-family: "SF Pro";
-	font-style: normal;
-	font-weight: 800;
+	font-weight: 500;
 	font-size: 16px;
 	line-height: 20px;
 	color: black;

@@ -1,24 +1,21 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
-import { Card, Switch, Typography } from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {Card} from '@material-ui/core';
 import '../css/deviceitem.css';
 import lamp from "../images/lamp.jpg";
 import camera from "../images/camera.jpg";
 import led from "../images/room.jpg";
 import Modal from "../components/modal";
-import EditDevice from '../components/EditDevice';
-import { Button, FormControl, InputLabel, Input, Select, MenuItem } from '@material-ui/core'
-import { manageDevice, manageLamp, manageLight } from '../Api/ApiDevices';
+import {manageCamera, manageLamp, manageLight} from '../Api/ApiDevices';
 import ColorPicker from './ColorPicker';
-import { DeviceHubRounded } from '@material-ui/icons';
 import AlarmTime from './AlarmTime';
 import Time from './Time';
 
 type Props = deviceProps & {
-	deleteDevice: (_id: string) => void;
-	editDevice: (e: React.FormEvent, _id: string, formData: deviceSchema) => void;
+	deleteDevice: (id: number) => void;
+	editDevice: (e: React.FormEvent, id: string, formData: deviceSchema) => void;
 };
 
-enum DeviceType {
+enum type {
 	LAMP = 'Лампа',
 	LIGHT = 'Лента',
 	CAMERA = 'Камера'
@@ -31,16 +28,16 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 	const [isClockAlarmPickerActive, setClockAlarmPickerActive] = useState(false);
 	const [isClockTimePickerActive, setClockTimePickerActive] = useState(false);
 	const [formData, setFormData] = useState<deviceSchema>({
-		_id: device._id,
+		id: device.id,
 		room_id: device.room_id,
 		name: device.name,
-		deviceType: device.deviceType,
+		type: device.type,
 		state: false
 	});
 
 	useEffect(() => {
 		checkPicture();
-	}, [device.deviceType]);
+	}, [device.type]);
 
 	function handleForm(e: any) {
 		setFormData({
@@ -50,11 +47,11 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 	}
 
 	function checkPicture() {
-		switch (device.deviceType) {
-			case DeviceType.CAMERA:
+		switch (device.type) {
+			case type.CAMERA:
 				setPicture(camera);
 				break;
-			case DeviceType.LIGHT:
+			case type.LIGHT:
 				setPicture(led);
 				break;
 			default:
@@ -63,9 +60,20 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 	}
 
 	function handleManageLight() {
-		var _id = device._id
+		var id = device.id
 		var color = device.state ? '000000' : '446AD9'
-		manageLight(_id, color)
+		manageLight(id, color, device.state)
+			.then(({ status }) => {
+				if (status !== 200) {
+					throw new Error("Error! Light can't be managed")
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
+	function handleManageCamera() {
+		var id = device.id
+		manageCamera(id, device.state)
 			.then(({ status }) => {
 				if (status !== 200) {
 					throw new Error("Error! Light can't be managed")
@@ -75,8 +83,8 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 	}
 
 	function handleManageLamp() {
-		var _id = device._id
-		manageLamp(_id, !device.state)
+		var id = device.id
+		manageLamp(id, !device.state)
 			.then(({ status }) => {
 				if (status !== 200) {
 					throw new Error("Error! Lamp can't be managed")
@@ -123,8 +131,20 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 				<img src={picture} alt="Device" className="small-rectangle-image" />
 				<p className="people">
 					{device.name}<br />
-					{device.deviceType}<br />
-					{device.deviceType === DeviceType.LIGHT && (
+					{device.type}<br />
+					{device.type === type.CAMERA && (
+						<div>
+							<div className="switch">
+								<label>
+									Off
+									<input type="checkbox" onChange={handleManageCamera} />
+									<span className="lever"></span>
+									On
+								</label>
+							</div>
+						</div>
+					)}
+					{device.type === type.LIGHT && (
 						<div>
 							<button className="material-icons change-color-button purple darken-1" onClick={handleColorPickerOpen}>color_lens</button>
 							{isColorPickerActive && (
@@ -142,7 +162,7 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 							</div>
 						</div>
 					)}
-					{device.deviceType === DeviceType.LAMP && (
+					{device.type === type.LAMP && (
 						<div>
 							<button className="material-icons alarm-button purple darken-1" onClick={handleManageClockAlarmPickerOpen}>access_alarm</button>
 							{isClockAlarmPickerActive && (
@@ -166,27 +186,27 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 							</div>
 						</div>
 					)}
-					<button className="material-icons delete-button pink darken-3" onClick={() => deleteDevice(device._id)}>delete</button>
+					<button className="material-icons delete-button pink darken-3" onClick={() => deleteDevice(parseInt(device.id))}>delete</button>
 					<button className="material-icons delete-button purple darken-1" onClick={handleModalOpen}>edit</button>
 				</p>
 				{isModalActive && (
-					<Modal title="Editing" onClose={handleModalClose}>
+					<Modal title="Изменить устройство" onClose={handleModalClose}>
 						<div className="card-content">
 							<div className="input-field col s6">
 								<input id="name" type="text" className="validate" onChange={handleForm} />
 								<label htmlFor="name" className="purple-text text-darken-4">Название</label>
 							</div>
 							<div className="input-field col s6">
-								<select onChange={handleForm} id='deviceType' name='deviceType' className="purple-text text-darken-4 select">
+								<select onChange={handleForm} id='type' name='type' className="purple-text text-darken-4 select">
 									<option value="" disabled selected>Тип устройства</option>
-									<option value={DeviceType.LAMP}>Лампа</option>
-									<option value={DeviceType.LIGHT}>Лента</option>
-									<option value={DeviceType.CAMERA}>Камера</option>
+									<option value={type.LAMP}>Лампа</option>
+									<option value={type.LIGHT}>Лента</option>
+									<option value={type.CAMERA}>Камера</option>
 								</select>
 							</div>
 							<div className="buttons">
 								<a className="waves-effect purple darken-1 btn-large button" onClick={(e) =>
-									editDevice(e, device._id, formData)}>
+									editDevice(e, device.id, formData)}>
 									Изменить
 								</a>
 							</div>

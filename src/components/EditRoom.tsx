@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { Button, FormControl, InputLabel, Input, Select } from '@material-ui/core'
 
 type Props = roomProps & {
-	editRoom: (e: React.FormEvent, _id: string, formData: roomSchema) => void
+	editRoom: (e: React.FormEvent, id: string, formData: roomSchema) => void
 }
 
 const EditRoom: React.FC<Props> = ({ room, editRoom }) => {
@@ -11,7 +11,7 @@ const EditRoom: React.FC<Props> = ({ room, editRoom }) => {
 	const navigate = useNavigate()
 
 	const [formData, setFormData] = useState<roomSchema>({
-		_id: room._id,
+		id: room.id,
 		name: room.name
 	});
 
@@ -33,7 +33,7 @@ const EditRoom: React.FC<Props> = ({ room, editRoom }) => {
 				</FormControl>
 			</div>
 			<Button disabled={formData === undefined ? true : false} onClick={(e) =>
-				editRoom(e, room._id, formData)}>
+				editRoom(e, room.id, formData)}>
 				Изменить
 			</Button>
 		</div>

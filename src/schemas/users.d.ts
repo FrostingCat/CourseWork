@@ -15,6 +15,10 @@ interface userRegisterSchema {
 	hash_password: string
 }
 
+type ApiTokenDataType = {
+	token: string
+}
+
 interface userAuthorizeSchema {
 	e_mail: string
 	hash_password: string

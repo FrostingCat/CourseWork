@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChromePicker, ColorResult } from 'react-color';
-import { manageAlarm, manageLight } from '../Api/ApiDevices';
+import { manageAlarm, manageLed } from '../Api/ApiDevices';
 import { TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

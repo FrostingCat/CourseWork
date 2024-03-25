@@ -1,21 +1,18 @@
 import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
 import {editUser} from '../Api/ApiUser';
-import {addEmail, addFirstName, addLastName} from './codeSlice';
 import '../css/materialize.css';
 import '../css/profile.css';
 import lamp from "../images/lamp.jpg";
 import Modal from './modal';
-import {RootState} from './store';
 
 function Profile() {
-	const data = useSelector((state: RootState) => state.user);
-	const dispatch = useDispatch();
 	const [isEditProfile, setEditProfile] = useState(false);
-
+	const name = localStorage.getItem('name');
+	const surname = localStorage.getItem('surname');
+	const email = localStorage.getItem('email')
 	const [formData, setFormData] = useState<userProfileSchema>({
-		name: data.firstName,
-		surname: data.lastName
+		name: name!!,
+		surname: surname!!
 	});
 
 	function handleForm(e: any) {
@@ -27,14 +24,13 @@ function Profile() {
 
 	const handleEditUser = (e: React.FormEvent): void => {
 		e.preventDefault()
-		editUser(formData, data.email)
+		editUser(formData, email!!)
 			.then(({ status }) => {
 				if (status !== 200) {
 					throw new Error("Error! User not edited")
 				}
-				dispatch(addFirstName(formData.name));
-				dispatch(addLastName(formData.surname));
-				dispatch(addEmail(data.email));
+				localStorage.setItem('name', formData.name)
+				localStorage.setItem('surname', formData.name)
 			})
 			.catch(err => console.log(err))
 	}
@@ -55,8 +51,8 @@ function Profile() {
 				</div>
 				<div className="card-content">
 					<span className="card-title">Профиль</span>
-					<p>{data.firstName} {data.lastName}</p>
-					<p>{data.email}</p>
+					<p>{name} {surname}</p>
+					<p>{email}</p>
 				</div>
 				<div className="card-action"
 					style={{ backgroundColor: 'rgba(255,255,255,0)' }}

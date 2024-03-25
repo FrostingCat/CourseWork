@@ -5,14 +5,14 @@ import lamp from "../images/lamp.jpg";
 import camera from "../images/camera.jpg";
 import led from "../images/room.jpg";
 import Modal from "../components/modal";
-import {manageCamera, manageLamp, manageLight} from '../Api/ApiDevices';
+import {manageCamera, manageLamp, manageLed} from '../Api/ApiDevices';
 import ColorPicker from './ColorPicker';
 import AlarmTime from './AlarmTime';
 import Time from './Time';
 
 type Props = deviceProps & {
 	deleteDevice: (id: number) => void;
-	editDevice: (e: React.FormEvent, id: string, formData: deviceSchema) => void;
+	editDevice: (e: React.FormEvent, formData: deviceSchema) => void;
 };
 
 enum type {
@@ -61,23 +61,25 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 
 	function handleManageLight() {
 		var id = device.id
-		var color = device.state ? '000000' : '446AD9'
-		manageLight(id, color, device.state)
+		var color = !device.state ? '000000' : '446AD9'
+		manageLed(id, color, device.state)
 			.then(({ status }) => {
 				if (status !== 200) {
 					throw new Error("Error! Light can't be managed")
 				}
+				device.state = !device.state
 			})
 			.catch(err => console.log(err))
 	}
 
 	function handleManageCamera() {
 		var id = device.id
-		manageCamera(id, device.state)
+		manageCamera(id, !device.state)
 			.then(({ status }) => {
 				if (status !== 200) {
 					throw new Error("Error! Light can't be managed")
 				}
+				device.state = !device.state
 			})
 			.catch(err => console.log(err))
 	}
@@ -89,6 +91,7 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 				if (status !== 200) {
 					throw new Error("Error! Lamp can't be managed")
 				}
+				device.state = !device.state
 			})
 			.catch(err => console.log(err))
 	}
@@ -206,7 +209,7 @@ const Item: React.FC<Props> = ({ device, deleteDevice, editDevice }) => {
 							</div>
 							<div className="buttons">
 								<a className="waves-effect purple darken-1 btn-large button" onClick={(e) =>
-									editDevice(e, device.id, formData)}>
+									editDevice(e, formData)}>
 									Изменить
 								</a>
 							</div>

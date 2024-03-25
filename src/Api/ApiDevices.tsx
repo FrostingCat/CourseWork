@@ -1,87 +1,62 @@
-import axios, {AxiosResponse} from "axios"
+import axios, { AxiosResponse } from "axios";
 
-const baseUrl = "http://127.0.0.1:8000"
+const baseUrl = "http://127.0.0.1:8000";
 
-
-const e_mail = "julia@mail.ru"
-const hash_password = "$2b$10$AAOFrjbRj8B5t6JVkUWNdu5.LiEB4cXCaJ6s6TcWqE8SH5FzlfmPy"
-
-export const getDevices = async (): Promise<AxiosResponse<ApiSimpleDeviceDataType>> => {
-	const user: userAuthorizeSchema = {
-		e_mail: e_mail,
-		hash_password: hash_password
-	}
-	return await axios.patch(
-		baseUrl + "/devices/get_all",
-		user
-	)
+function getToken() {
+	return localStorage.getItem('token');
 }
 
-export const getDevicesByRoomId = async (id: string,): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	return await axios.get(
-		`${baseUrl}/devices/room/${id}`,
-	)
+const axiosInstance = axios.create({
+	baseURL: baseUrl,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+	const token = getToken();
+	if (token) {
+		config.headers['Authorization'] = token;
+	}
+	return config;
+}, (error) => {
+	return Promise.reject(error);
+});
+
+export const getDevices = async (): Promise<AxiosResponse<ApiSimpleDeviceDataType>> => {
+	return await axiosInstance.get("/devices/get_all");
 }
 
 export const addDevice = async (
 	formData: deviceAddSchema
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const device: deviceAddSchema = {
-		e_mail: e_mail,
-		hash_password: hash_password,
-		room_id: formData.room_id,
-		name: formData.name,
-		type: formData.type,
-		ip: formData.ip
-	}
-	console.table(device)
-	return await axios.post(
-		baseUrl + "/devices/create",
-		device
-	)
+	return await axiosInstance.post("/devices/create", formData);
 }
 
-export const manageLight = async (
+export const manageLed = async (
 	id: string,
 	color: string,
 	state: boolean
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const light: lightSchema = {
-		id: id,
-		color: color,
-		state: state
-	}
-	return await axios.put(
-		`${baseUrl}/devices/manage_led`,
-		light
-	)
+	return await axiosInstance.put(`/devices/manage_led`, {
+		id, color, state
+	});
 }
 
 export const manageCamera = async (
 	id: string,
 	state: boolean
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const managedLight: AxiosResponse<ApiDeviceDataType> = await axios.post(
-		`${baseUrl}/devices/manage_security/${id}`
-	)
-	console.log(id);
-	return managedLight
+	return await axiosInstance.put(`/devices/manage_security`, {
+		id: id,
+		state: state
+	});
 }
 
 export const manageLamp = async (
 	id: string,
 	state: boolean
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const message: lampSchema = {
-		id: id,
-		state: state
-	}
-	const managedLight: AxiosResponse<ApiDeviceDataType> = await axios.post(
-		`${baseUrl}/devices/manage_clock_lamp`,
-		message
-	)
-	console.log(id, state);
-	return managedLight
+	return await axiosInstance.put(`/devices/manage_clock_lamp`, {
+		id, state
+	});
 }
 
 export const manageAlarm = async (
@@ -89,74 +64,39 @@ export const manageAlarm = async (
 	state: boolean,
 	time: string
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const message: alarmSchema = {
-		id: id,
-		state: state,
-		time: time
-	}
-	const managedAlarm: AxiosResponse<ApiDeviceDataType> = await axios.post(
-		`${baseUrl}/devices/manage_clock_alarm`,
-		message
-	)
-	console.log(id, state, time);
-	return managedAlarm
+	return await axiosInstance.put(`/devices/manage_alarm`, {
+		id, state, time
+	});
 }
 
 export const manageTime = async (
 	id: string,
 	time: string
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const message: timeSchema = {
-		id: id,
-		time: time
-	}
-	const managedTime: AxiosResponse<ApiDeviceDataType> = await axios.post(
-		`${baseUrl}/devices/manage_clock_time`,
-		message
-	)
-	console.log(id, time);
-	return managedTime
+	return await axiosInstance.put(`/devices/manage_clock_time`, {
+		id, time
+	});
 }
 
 export const editDevice = async (
-	id: string,
 	formData: deviceSchema
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const device: deviceEditSchema = {
-		e_mail: e_mail,
-		hash_password: hash_password,
-		id: parseInt(id),
+	return await axiosInstance.put(`/devices/update`, {
 		room_id: formData.room_id,
 		name: formData.name,
-		type: formData.type
-	}
-	console.table(device)
-	return await axios.put(
-		`${baseUrl}/devices/update`,
-		device
-	)
+		type: formData.type,
+		id: formData.id
+	});
 }
 
 export const deleteDevice = async (
-	id: number
+	device_id: number
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const deleteDevice: deviceDeleteSchema = {
-		e_mail: e_mail,
-		hash_password: hash_password,
-		device_id: id
-	}
-	return await axios.patch(
-		`${baseUrl}/devices/delete`,
-		deleteDevice
-	)
+	return await axiosInstance.delete(`/devices/delete/${device_id}`);
 }
 
 export const manageDevice = async (
 	id: string
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	const managedDevice: AxiosResponse<ApiDeviceDataType> = await axios.post(
-		`${baseUrl}/devices/manage/${id}`
-	)
-	console.log(id)
-	return managedDevice
+	return await axiosInstance.post(`/devices/manage/${id}`);
 }

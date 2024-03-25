@@ -19,8 +19,6 @@ const AddDevice: React.FC<Props> = ({saveDevice}) => {
     const [rooms, setRooms] = useState<roomSchema[]>([]);
     const [errorMessage, setErrorMessage] = useState("")
     const [formData, setFormData] = useState<deviceAddSchema>({
-        e_mail: '',
-        hash_password: '',
         name: '',
         type: type.CAMERA,
         room_id: 0,
@@ -49,7 +47,7 @@ const AddDevice: React.FC<Props> = ({saveDevice}) => {
     const handleSaveRoom = (): void => {
         const roomInput = document.getElementById('room') as HTMLInputElement;
         const room = roomInput.value;
-        addRoom(e_mail, hash_password, room)
+        addRoom(room)
             .then(({status, data}) => {
                 if (status !== 201) {
                     alert("Error! Room not saved")

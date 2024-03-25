@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Button } from '@material-ui/core'
 import '../css/roomitem.css'
-import { deleteDevice, editDevice, getDevicesByRoomId } from '../Api/ApiDevices';
+import { deleteDevice, editDevice } from '../Api/ApiDevices';
 import DeviceItem from '../components/DeviceItem'
 
 type Props = roomProps & {
@@ -15,27 +15,12 @@ enum type {
 }
 
 const Item: React.FC<Props> = ({ room, deleteRoom }) => {
-	const [devices, setDevices] = useState<deviceSchema[]>([
-		{
-			id: '1',
-			room_id: '1',
-			name: "Устройство 1",
-			type: type.CAMERA,
-			state: false
-		},
-		{
-			id: '2',
-			room_id: '1',
-			name: "Устройство 2",
-			type: type.LAMP,
-			state: false
-		}
-	]);
+	const [devices, setDevices] = useState<deviceSchema[]>([]);
 
 
-	const handleEditDevice = (e: React.FormEvent, id: string, formData: deviceSchema): void => {
+	const handleEditDevice = (e: React.FormEvent, formData: deviceSchema): void => {
 		e.preventDefault()
-		editDevice(id, formData)
+		editDevice(formData)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not edited")

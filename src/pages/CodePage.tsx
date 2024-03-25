@@ -19,10 +19,11 @@ function CodePage() {
 		
 		if (code === data.code) {
 			createUser(data.firstName, data.lastName, data.email, data.password)
-			.then(({ status }) => {
+			.then(({ status, data }) => {
 				if (status !== 201) {
 					throw new Error("Error! User is not registered")
 				}
+				localStorage.setItem('token', data.token)
 				navigate('/home');
 			})
 			.catch(err => console.log(err))

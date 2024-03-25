@@ -21,10 +21,6 @@ function RegistrationPage() {
 		const email = emailInput.value;
 		const password = passwordInput.value;
 
-		dispatch(addFirstName(firstName));
-		dispatch(addLastName(lastName));
-		dispatch(addEmail(email));
-
 		const hashedPassword = bcrypt.hashSync(password, salt);
 		dispatch(addPassword(hashedPassword));
 
@@ -36,8 +32,10 @@ function RegistrationPage() {
 					throw new Error("Error! User is not registered")
 				}
 				const code = data.code!!;
+				localStorage.setItem('name', firstName)
+				localStorage.setItem('surname', lastName)
+				localStorage.setItem('email', email)
 				dispatch(addCode(code));
-				//
 			})
 			.catch(err => console.log(err))
 

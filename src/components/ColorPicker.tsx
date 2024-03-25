@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChromePicker, ColorResult } from 'react-color';
-import { manageLight } from '../Api/ApiDevices';
+import { manageLed } from '../Api/ApiDevices';
 
 type Props = deviceProps;
 const ColorPicker: React.FC<Props> = ({device}) => {
@@ -12,7 +12,7 @@ const ColorPicker: React.FC<Props> = ({device}) => {
   };
 
   const handleManageLight = (): void => {
-	manageLight(device.id, color, true)
+	manageLed(device.id, color, true)
 		.then(({ status, data }) => {
 			if (status !== 200) {
 				throw new Error("Error! Device not managed")

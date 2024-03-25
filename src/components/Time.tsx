@@ -17,7 +17,7 @@ const Time: React.FC<Props> = ({ device }) => {
 		manageTime(device.id, timeString)
 			.then(({ status, data }) => {
 				if (status !== 200) {
-					throw new Error("Error! Device not managed")
+					throw new Error("Error! Time not managed")
 				}
 			})
 			.catch(err => console.log(err))

@@ -29,8 +29,6 @@ interface deviceEditSchema {
 type ApiSimpleDeviceDataType = deviceGetSchema[]
 
 interface deviceAddSchema {
-	e_mail: string,
-	hash_password: string,
 	room_id: number
 	name: string
 	type: type,
@@ -77,7 +75,5 @@ type ApiRoomDataType = {
 type ApiSimpleRoomDataType = roomSchema[]
 
 interface roomAddSchema {
-	e_mail: string,
-	hash_password: string,
 	name: string
 }

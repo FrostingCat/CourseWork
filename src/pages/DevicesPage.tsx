@@ -1,17 +1,15 @@
-import { AnimatePresence, motion } from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import M from 'materialize-css';
-import React, { useEffect, useState } from 'react';
-import { addDevice, deleteDevice, editDevice, getDevices } from '../Api/ApiDevices';
+import React, {useEffect, useState} from 'react';
+import {addDevice, deleteDevice, editDevice, getDevices} from '../Api/ApiDevices';
 import AddDevice from '../components/AddDevice';
-import { getDateTime } from '../components/DateUtil';
+import {getDateTime} from '../components/DateUtil';
 import DeviceItem from '../components/DeviceItem';
 import Modal from "../components/modal";
 import '../css/devicespage.css';
 import '../css/materialize.css';
 import lamp from "../images/lamp.jpg";
-import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
-import { RootState } from "../components/store";
+import SlideBar from "../components/Slidebar";
 
 enum type {
 	LAMP = 'Лампа',
@@ -20,8 +18,6 @@ enum type {
 }
 
 function DevicesPage() {
-	const navigate = useNavigate();
-	const data = useSelector((state: RootState) => state.user);
 	const [devices, setDevices] = useState<deviceGetSchema[]>([])
 	const [isModalAddActive, setModalAddActive] = useState(false);
 
@@ -41,22 +37,19 @@ function DevicesPage() {
 					if (status !== 201) {
 						alert("Error! Device not saved")
 					}
-					setDevices(data.device as deviceGetSchema[])
 					fetchDevices()
 				})
 				.catch(err => console.log(err))
 		}
 	}
 
-	const handleEditDevice = (e: React.FormEvent, id: string, formData: deviceSchema): void => {
+	const handleEditDevice = (e: React.FormEvent, formData: deviceSchema): void => {
 		e.preventDefault()
-		editDevice(id, formData)
+		editDevice(formData)
 			.then(({ status, data }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not edited")
 				}
-				console.log(data.device, { data })
-				setDevices(data.device as deviceGetSchema[])
 				fetchDevices()
 			})
 			.catch(err => console.log(err))
@@ -68,7 +61,6 @@ function DevicesPage() {
 				if (status !== 200) {
 					throw new Error("Error! Device not deleted")
 				}
-				setDevices(data.device as deviceGetSchema[])
 				fetchDevices()
 			})
 			.catch(err => console.log(err))
@@ -82,12 +74,7 @@ function DevicesPage() {
 	};
 
 	useEffect(() => {
-		let elements = document.querySelectorAll(".sidenav");
-		M.Sidenav.init(elements[0]);
-		M.Sidenav.init(elements[1], {
-			edge: "right"
-		});
-		var elems = document.querySelectorAll('.fixed-action-btn');
+		const elems = document.querySelectorAll('.fixed-action-btn');
 		M.FloatingActionButton.init(elems);
 		fetchDevices()
 	}, []);
@@ -102,35 +89,14 @@ function DevicesPage() {
 	}
 
 	setInterval(function () {
-		var currentTime = getDateTime();
-		document.getElementById("digital-clock")!!.innerHTML = currentTime;
+		document.getElementById("digital-clock")!!.innerHTML = getDateTime();
 	}, 1000);
 
 	return (
 		<motion.div>
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 			<div>
-				<div className="device-image"
-					style={{ backgroundImage: 'url(' + lamp + ')' }}
-				>
-				</div>
-				<ul id="slide-out" className="sidenav sidenav-fixed big">
-					<li><div className="user-view">
-						<div className="background">
-							<img src={lamp} />
-						</div>
-						<a><img className="circle" src={lamp} /></a>
-						<a><span className="white-text name">{data.firstName} {data.lastName}</span></a>
-						<a><span className="white-text email">{data.email}</span></a>
-					</div></li>
-					<li><a className="waves-effect" onClick={() => navigate("/home")}> Дом</a></li>
-					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" onClick={() => navigate("/rooms")}>Комнаты</a></li>
-					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" onClick={() => navigate("/devices")}>Устройства</a></li>
-					<li><div className="divider"></div></li>
-					<li><a className="waves-effect" onClick={() => navigate("/profile")}>Профиль</a></li>
-				</ul>
+				<SlideBar/>
 
 				<ul id="slide-out" className="sidenav sidenav-fixed small">
 					<li><div className="user-view">

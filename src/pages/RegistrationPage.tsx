@@ -10,6 +10,19 @@ function RegistrationPage() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
+	function isValidPassword(password: string): boolean {
+		const hasLetter = /[a-zA-Z]/.test(password);
+		const hasNumber = /\d/.test(password);
+		const hasSpecialChar = /[\W_]/.test(password); // \W - любой символ, не являющийся буквенно-цифровым, _ включен отдельно
+
+		return hasLetter && hasNumber && hasSpecialChar;
+	}
+
+	function isValidEmail(email: string) {
+		const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		return regex.test(email);
+	}
+
 	const handleRegistration = () => {
 		const firstNameInput = document.getElementById('first_name') as HTMLInputElement;
 		const lastNameInput = document.getElementById('last_name') as HTMLInputElement;
@@ -21,10 +34,18 @@ function RegistrationPage() {
 		const email = emailInput.value;
 		const password = passwordInput.value;
 
+		if (!isValidEmail(email)) {
+			alert("Некорректный email")
+			return
+		}
+
+		if (!isValidPassword(password)) {
+			alert("В пароле нет буквы, цифры или спец. символа")
+			return
+		}
+
 		const hashedPassword = bcrypt.hashSync(password, salt);
 		dispatch(addPassword(hashedPassword));
-
-		console.log(hashedPassword);
 
 		checkCodeUser(email)
 			.then(({ status, data }) => {
@@ -36,10 +57,14 @@ function RegistrationPage() {
 				localStorage.setItem('surname', lastName)
 				localStorage.setItem('email', email)
 				dispatch(addCode(code));
+				navigate('/code');
 			})
-			.catch(err => console.log(err))
+			.catch(err => {
+				alert("Такой пользователь уже существует")
+				console.log(err)
+			})
 
-		navigate('/code');
+
 	}
 
 	return (
@@ -65,8 +90,8 @@ function RegistrationPage() {
 						</div>
 						<div className="input-field inline">
 							<input id="password_inline" type="password" className="validate" />
-							<label htmlFor="password_inline" className="purple-text text-darken-4">Password</label>
-							<span className="helper-text" data-error="злой пароль" data-success="хороший пароль"></span>
+							<label htmlFor="password_inline" className="purple-text text-darken-4">Пароль</label>
+							<span className="helper-text"></span>
 						</div>
 					</div>
 					<div className="buttons">

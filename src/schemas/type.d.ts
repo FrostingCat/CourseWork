@@ -6,6 +6,16 @@ interface deviceSchema {
 	state: boolean
 }
 
+interface devicesByRoom {
+	device_id: number
+	name: string
+	type: string
+	state: boolean
+	time: string
+	alarm_time: string
+	alarm_lamp: boolean
+}
+
 interface deviceGetSchema {
 	id: string
 	name: string
@@ -54,7 +64,7 @@ interface deviceProps {
 type ApiDeviceDataType = {
 	message: string
 	status: string
-	device?: deviceSchema[]
+	device?: devicesByRoom[]
 }
 
 interface roomSchema {

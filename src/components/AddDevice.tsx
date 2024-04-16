@@ -12,9 +12,6 @@ enum type {
     CAMERA = 'Камера'
 }
 
-const e_mail = "julia@mail.ru"
-const hash_password = "$2b$10$AAOFrjbRj8B5t6JVkUWNdu5.LiEB4cXCaJ6s6TcWqE8SH5FzlfmPy"
-
 const AddDevice: React.FC<Props> = ({saveDevice}) => {
     const [rooms, setRooms] = useState<roomSchema[]>([]);
     const [errorMessage, setErrorMessage] = useState("")
@@ -97,20 +94,11 @@ const AddDevice: React.FC<Props> = ({saveDevice}) => {
                     <label htmlFor="ip" className="purple-text text-darken-4">IP</label>
                 </div>
             </div>
-            {formData === undefined && (
-                <div className="buttons">
-                    <a className="waves-effect purple darken-1 btn-large button disabled">
-                        Добавить
-                    </a>
-                </div>
-            )}
-            {formData !== undefined && (
-                <div className="buttons" onClick={(e) => saveDevice(e, formData)}>
-                    <a className="waves-effect purple darken-1 btn-large button">
-                        Добавить
-                    </a>
-                </div>
-            )}
+            <div className="buttons" onClick={(e) => saveDevice(e, formData)}>
+                <a className="waves-effect purple darken-1 btn-large button">
+                    Добавить
+                </a>
+            </div>
         </div>
     )
 }

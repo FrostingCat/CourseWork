@@ -16,15 +16,19 @@ function CodePage() {
 	const checkCode = () => {
 		const codeInput = document.getElementById('code') as HTMLInputElement;
 		const code = codeInput.value;
-		
+
+		const name = localStorage.getItem('name')
+		const surname = localStorage.getItem('surname')
+		const email = localStorage.getItem('email')
+
 		if (code === data.code) {
-			createUser(data.firstName, data.lastName, data.email, data.password)
+			createUser(name!!, surname!!, email!!, data.password!!)
 			.then(({ status, data }) => {
 				if (status !== 201) {
 					throw new Error("Error! User is not registered")
 				}
 				localStorage.setItem('token', data.token)
-				navigate('/home');
+				navigate('/profile');
 			})
 			.catch(err => console.log(err))
 		} else {

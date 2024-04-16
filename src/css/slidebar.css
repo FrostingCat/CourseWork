@@ -1,0 +1,10 @@
+.message {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.background-pic {
+    filter: opacity(0.80) brightness(75%);
+    height: 150px;
+    width: 500%;
+}

@@ -4,6 +4,7 @@ import '../css/materialize.css';
 import '../css/profile.css';
 import lamp from "../images/lamp.jpg";
 import Modal from './modal';
+import {useNavigate} from "react-router-dom";
 
 function Profile() {
 	const [isEditProfile, setEditProfile] = useState(false);
@@ -14,6 +15,7 @@ function Profile() {
 		name: name!!,
 		surname: surname!!
 	});
+	const navigate = useNavigate()
 
 	function handleForm(e: any) {
 		setFormData({
@@ -30,9 +32,14 @@ function Profile() {
 					throw new Error("Error! User not edited")
 				}
 				localStorage.setItem('name', formData.name)
-				localStorage.setItem('surname', formData.name)
+				localStorage.setItem('surname', formData.surname)
 			})
 			.catch(err => console.log(err))
+	}
+
+	const handleExit = () => {
+		localStorage.clear()
+		navigate('/')
 	}
 
 	const handleEditProfileOpen = () => {
@@ -57,8 +64,8 @@ function Profile() {
 				<div className="card-action"
 					style={{ backgroundColor: 'rgba(255,255,255,0)' }}
 				>
-					<a href="/" className="waves-effect pink darken-3 btn-large button but-1">Выйти</a>
-					<a className="waves-effect purple darken-1 btn-large button" onClick={handleEditProfileOpen}>
+					<a className="waves-effect btn-large button but-1" onClick={handleExit}  style={{backgroundColor: "#AB243E", width: "45%"}}>Выйти</a>
+					<a className="waves-effect btn-large button" onClick={handleEditProfileOpen}  style={{backgroundColor: "#8722A2", width: "48%"}}>
 						Редактировать
 					</a>
 					{isEditProfile && (

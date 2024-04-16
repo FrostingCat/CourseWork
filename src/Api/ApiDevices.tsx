@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
+import {baseUrl} from "./ApiEnv";
 
-const baseUrl = "http://127.0.0.1:8000";
 
 function getToken() {
 	return localStorage.getItem('token');
@@ -81,22 +81,17 @@ export const manageTime = async (
 export const editDevice = async (
 	formData: deviceSchema
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
+	console.table(formData)
 	return await axiosInstance.put(`/devices/update`, {
-		room_id: formData.room_id,
+		room_id: parseInt(formData.room_id),
 		name: formData.name,
 		type: formData.type,
-		id: formData.id
+		id: parseInt(formData.id)
 	});
 }
 
 export const deleteDevice = async (
 	device_id: number
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	return await axiosInstance.delete(`/devices/delete/${device_id}`);
-}
-
-export const manageDevice = async (
-	id: string
-): Promise<AxiosResponse<ApiDeviceDataType>> => {
-	return await axiosInstance.post(`/devices/manage/${id}`);
+	return await axiosInstance.delete(`/devices/delete?device_id=${device_id}`);
 }

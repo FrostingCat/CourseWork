@@ -1,7 +1,7 @@
 import '../css/devicespage.css'
+import '../css/roomspage.css'
 import '../css/materialize.css'
 import M from 'materialize-css'
-import lamp from "../images/lamp.jpg"
 import React, {useEffect, useState} from 'react';
 import {addRoom, deleteRoom, editRoom, getDevicesByRoomId, getRooms} from '../Api/ApiRooms'
 import {motion} from "framer-motion";
@@ -9,9 +9,11 @@ import {Button} from '@material-ui/core'
 import Modal from "../components/modal";
 import AddRoom from '../components/AddRoom';
 import {getDateTime} from '../components/DateUtil';
-import {deleteDevice, editDevice} from '../Api/ApiDevices';
+import {addDevice, deleteDevice, editDevice} from '../Api/ApiDevices';
 import DeviceItem from '../components/DeviceItem'
 import SlideBar from "../components/Slidebar";
+import EditRoom from "../components/EditRoom";
+import AddDeviceToRoom from "../components/AddDeviceToRoom";
 
 enum type {
     LAMP = 'Лампа',
@@ -23,9 +25,9 @@ function RoomsPage() {
     const [rooms, setRooms] = useState<roomSchema[]>([])
     const [isModalActive, setModalActive] = useState(false);
     const [isModalAddActive, setModalAddActive] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState('');
-    const [devices, setDevices] = useState<deviceSchema[]>([]);
-    const [roomElements, setRoomElements] = useState<deviceSchema[]>([]);
+    const [isModalDeviceAddActive, setModalDeviceAddActive] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState<roomSchema | null>(null);
+    const [roomElements, setRoomElements] = useState<devicesByRoom[]>([]);
 
     const checkFormData = (formData: roomSchema): boolean => {
         if (!formData.name) {
@@ -35,15 +37,22 @@ function RoomsPage() {
         return true
     }
 
+    const checkFormDeviceData = (formData: deviceAddSchema): boolean => {
+        if (!formData.name || !formData.type || !formData.ip) {
+            alert("Заполните все поля");
+            return false
+        }
+        return true
+    }
+
     const handleSaveRoom = (e: React.FormEvent, formData: roomSchema): void => {
         e.preventDefault()
         if (checkFormData(formData)) {
             addRoom(formData.name)
-                .then(({status, data}) => {
+                .then(({status}) => {
                     if (status !== 201) {
                         alert("Error! Room not saved")
                     }
-                    console.log(data.room, {data})
                     fetchRooms()
                 })
                 .catch(err => console.log(err))
@@ -54,11 +63,10 @@ function RoomsPage() {
     const handleEditRoom = (e: React.FormEvent, id: string, formData: roomSchema): void => {
         e.preventDefault()
         editRoom(id, formData)
-            .then(({status, data}) => {
+            .then(({status}) => {
                 if (status !== 200) {
                     throw new Error("Error! Room not edited")
                 }
-                console.log(data.room, {data})
                 fetchRooms()
             })
             .catch(err => console.log(err))
@@ -66,11 +74,13 @@ function RoomsPage() {
 
     const handleDeleteRoom = (id: string): void => {
         deleteRoom(id)
-            .then(({status, data}) => {
+            .then(({status}) => {
                 if (status !== 200) {
                     throw new Error("Error! Room not deleted")
                 }
                 fetchRooms()
+                setRoomElements([])
+                setSelectedRoom(null)
             })
             .catch(err => console.log(err))
     }
@@ -89,39 +99,60 @@ function RoomsPage() {
         setModalAddActive(false);
     };
 
-    const handleRoomClick = (room_id: string) => {
-        setSelectedRoom(room_id);
-        fetchDevicesById(room_id);
+    const handleModalDeviceAddOpen = () => {
+        setModalDeviceAddActive(true);
+    };
+    const handleModalDeviceAddClose = () => {
+        setModalDeviceAddActive(false);
+    };
+
+    const handleRoomClick = (room: roomSchema) => {
+        setSelectedRoom(room);
+        fetchDevicesById(room.id);
     };
 
     const fetchDevicesById = (id: string): void => {
         getDevicesByRoomId(id)
-            .then(({data: {data}}: deviceSchema[] | any) => {
+            .then(({data}: devicesByRoom[] | any) => {
                 setRoomElements(data)
             })
             .catch((err: Error) => console.log(err))
     }
 
+    const handleSaveDevice = (e: React.FormEvent, formData: deviceAddSchema): void => {
+        e.preventDefault()
+        formData.room_id = parseInt(selectedRoom!!.id)
+        if (checkFormDeviceData(formData)) {
+            addDevice(formData)
+                .then(({status}) => {
+                    if (status !== 201) {
+                        alert("Error! Device not saved")
+                    }
+                    fetchDevicesById(selectedRoom!!.id)
+                })
+                .catch(err => console.log(err))
+        }
+    }
+
     const handleEditDevice = (e: React.FormEvent, formData: deviceSchema): void => {
         e.preventDefault()
         editDevice(formData)
-            .then(({status, data}) => {
+            .then(({status}) => {
                 if (status !== 200) {
                     throw new Error("Error! Device not edited")
                 }
-                console.log(data.device, {data})
-                setDevices(data.device as deviceSchema[])
+                fetchDevicesById(selectedRoom!!.id)
             })
             .catch(err => console.log(err))
     }
 
     const handleDeleteDevice = (id: number): void => {
         deleteDevice(id)
-            .then(({status, data}) => {
+            .then(({status}) => {
                 if (status !== 200) {
                     throw new Error("Error! Device not deleted")
                 }
-                setDevices(data.device as deviceSchema[])
+                fetchDevicesById(selectedRoom!!.id)
             })
             .catch(err => console.log(err))
     }
@@ -148,24 +179,9 @@ function RoomsPage() {
         <motion.div>
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
             <div>
-				<SlideBar/>
-
-                <ul id="slide-out" className="sidenav sidenav-fixed small">
-                    <li>
-                        <div className="user-view">
-                            <div className="background">
-                                <img src={lamp}/>
-                            </div>
-                            <a><img className="circle" src={lamp}/></a>
-                            <a>
-                                <div id="digital-clock"></div>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
+                <SlideBar/>
 
                 <h4 className='devices-label'>Мои Комнаты</h4>
-
                 <div className="fixed-action-btn plus-btn">
                     <a className="btn-floating btn waves-effect purple darken-1">
                         <i className="large material-icons" onClick={handleModalAddOpen}>add</i>
@@ -173,7 +189,7 @@ function RoomsPage() {
                 </div>
                 <div>
                     {isModalAddActive && (
-                        <Modal title="Добавление" onClose={handleModalAddClose}>
+                        <Modal title="Добавление комнаты" onClose={handleModalAddClose}>
                             <AddRoom saveRoom={handleSaveRoom}/>
                         </Modal>
                     )}
@@ -183,67 +199,66 @@ function RoomsPage() {
                     {rooms
                         ?.map((room: roomSchema) => (
                             <div className="room-item">
-                                <Button key={room.id} onClick={() => handleRoomClick(room.id)}
-                                        className="people-room white"
-                                        style={{border: '1px solid #000', borderRadius: 20, background: ''}}>
+                                <Button key={room.id} onClick={() => handleRoomClick(room)}
+                                        className="people-room purple darken-3"
+                                        style={{
+                                            // border: '1px solid #000',
+                                            borderRadius: 25,
+                                            fontSize: 17,
+                                            color: "white",
+                                            boxShadow: '0.5px 0.5px 8px 1px rgba(255, 255, 255, 0.6)'
+                                        }}>
                                     {room.name}<br></br>
                                 </Button>
-                                {/* <Button className="button" type="button" onClick={handleModalOpen}>
-										Edit
-									</Button>
-									<div>
-										{isModalActive && (
-											<Modal title="Editing" onClose={handleModalClose}>
-												<EditRoom editRoom={handleEditRoom} room={room} />
-											</Modal>
-										)}
-									</div> */}
                             </div>
                         ))}
                 </div>
 
                 {selectedRoom && (
                     <div>
-                        <h4 className='devices-label'>Комната {selectedRoom}</h4>
-                        <Button className="button" type="button" onClick={handleModalOpen}>
-                            Edit
-                        </Button>
-                        {/* <div>
-							{isModalActive && (
-								<Modal title="Editing" onClose={handleModalClose}>
-									<EditRoom editRoom={handleEditRoom} room={room} />
-								</Modal>
-							)}
-						</div> */}
-                        {roomElements.map((device) => (
-                            <div>
-                                <DeviceItem
-                                    key={device.id}
-                                    deleteDevice={handleDeleteDevice}
-                                    editDevice={handleEditDevice}
-                                    device={device}
-                                />
-                            </div>
-                        ))}
+                        <div className='room'>
+                            <h4 className='devices-label'>{selectedRoom.name}</h4>
+                            <button className="material-icons delete-button delete" style={{backgroundColor: "#AB243E"}}
+                                    onClick={() => handleDeleteRoom(selectedRoom.id)}>delete
+                            </button>
+                            <button className="material-icons delete-button edit" style={{backgroundColor: "#8722A2"}}
+                                    onClick={handleModalOpen}>edit
+                            </button>
+                            <button className="material-icons delete-button edit" style={{backgroundColor: "#6124AB"}}
+                                    onClick={handleModalDeviceAddOpen}>add
+                            </button>
+                        </div>
+                        {isModalActive && (
+                            <Modal title="Изменить комнату" onClose={handleModalClose}>
+                                <EditRoom editRoom={handleEditRoom} room={selectedRoom}/>
+                            </Modal>
+                        )}
+                        {isModalDeviceAddActive && (
+                            <Modal title="Добавление устройства" onClose={handleModalDeviceAddClose}>
+                                <AddDeviceToRoom saveDevice={handleSaveDevice}/>
+                            </Modal>
+                        )}
+                        {roomElements?.map((device) => {
+                            const transformedDevice: deviceSchema = {
+                                id: String(device.device_id),
+                                room_id: selectedRoom.id,
+                                name: device.name,
+                                type: device.type as type,
+                                state: device.state
+                            };
+
+                            return (
+                                <div key={device.device_id}>
+                                    <DeviceItem
+                                        deleteDevice={handleDeleteDevice}
+                                        editDevice={handleEditDevice}
+                                        device={transformedDevice}
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
-
-
-                {/* <div className="row device-card">
-				<div className="col s12 m6">
-					<div className="card deep-purple lighten-4">
-						<div className="card-content">
-							<span className="card-title">Профиль</span>
-							<p>Имя Фамилия</p>
-							<p>Почта</p>
-						</div>
-						<div className="card-action">
-							<a href="/" className="waves-effect pink darken-3 btn-large button but-1">Выйти</a>
-							<a href="/edit" className="waves-effect purple darken-1 btn-large button">Редактировать</a>
-						</div>
-					</div>
-				</div>
-			</div> */}
             </div>
         </motion.div>
     )

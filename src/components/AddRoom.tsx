@@ -25,13 +25,18 @@ const AddRoom: React.FC<Props> = ({ saveRoom }) => {
 
 	return (
 		<div>
-			<div className='Add-Form'>
-				<FormControl>
-					<InputLabel htmlFor='name'>Название</InputLabel>
-					<Input onChange={handleForm} type='text' id='name' />
-				</FormControl>
+			<div className="card-content">
+				<div className="input-field col s6">
+					<input id="name" type="text" className="validate" onChange={handleForm}/>
+					<label htmlFor="name" className="purple-text text-darken-4">Название</label>
+				</div>
+
+				<div className="buttons">
+					<a className="waves-effect purple darken-1 btn-large button" onClick={(e) => saveRoom(e, formData)}>
+						Добавить
+					</a>
+				</div>
 			</div>
-			<Button disabled={formData === undefined ? true : false} onClick={(e) => saveRoom(e, formData)}>Добавить</Button>
 		</div>
 	)
 }

@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import { ChromePicker, ColorResult } from 'react-color';
-import { manageAlarm, manageLed } from '../Api/ApiDevices';
-import { TimePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import React, {useState} from 'react';
+import {manageAlarm} from '../Api/ApiDevices';
+import {TimePicker} from '@mui/x-date-pickers';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import '../css/alarmtime.css'
-import dayjs, { Dayjs } from 'dayjs';
-import { Button } from '@material-ui/core';
+import dayjs, {Dayjs} from 'dayjs';
 
 type Props = deviceProps;
 const AlarmTime: React.FC<Props> = ({ device }) => {
@@ -20,7 +18,7 @@ const AlarmTime: React.FC<Props> = ({ device }) => {
 	const editAlarm = (): void => {
 		const hour = time?.get('hour');
 		const minute = time?.get('minute');
-		var timeString = hour + ':' + minute;
+		const timeString = hour + ':' + minute;
 		manageAlarm(device.id, isOn, timeString)
 			.then(({ status, data }) => {
 				if (status !== 200) {
@@ -51,6 +49,7 @@ const AlarmTime: React.FC<Props> = ({ device }) => {
 					<TimePicker
 						label="Выберите время будильника"
 						value={time}
+						format=" HH:mm"
 						onChange={(newValue) => setTime(newValue)}
 					/>
 				</LocalizationProvider>

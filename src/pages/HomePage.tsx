@@ -14,20 +14,6 @@ function HomePage() {
     return (
         <div>
             <SlideBar/>
-
-            <ul id="slide-out" className="sidenav sidenav-fixed small">
-                <li>
-                    <div className="user-view">
-                        <div className="background">
-                            <img src={lamp}/>
-                        </div>
-                        <a><img className="circle" src={lamp}/></a>
-                        <a>
-                            <div id="digital-clock"></div>
-                        </a>
-                    </div>
-                </li>
-            </ul>
         </div>
     )
 }

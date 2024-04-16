@@ -1,6 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-
-const baseUrl = "http://127.0.0.1:8000";
+import {baseUrl} from "./ApiEnv";
 
 function getToken() {
     return localStorage.getItem("token");
@@ -27,7 +26,7 @@ export const getRooms = async (): Promise<AxiosResponse<ApiSimpleRoomDataType>> 
 export const getDevicesByRoomId = async (
     id: string
 ): Promise<AxiosResponse<ApiDeviceDataType>> => {
-    return await axiosInstance.get(`/rooms/devices/${(parseInt(id))}`,)
+    return await axiosInstance.get(`/rooms/devices?room_id=${(parseInt(id))}`)
 }
 
 export const addRoom = async (
@@ -51,5 +50,5 @@ export const editRoom = async (
 export const deleteRoom = async (
     id: string
 ): Promise<AxiosResponse<ApiRoomDataType>> => {
-    return await axiosInstance.delete(`/rooms/delete${id}`);
+    return await axiosInstance.delete(`/rooms/delete?room_id=${(parseInt(id))}`);
 };

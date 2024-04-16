@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios"
+import {baseUrl} from "./ApiEnv";
 
-const baseUrl = "http://127.0.0.1:8000"
 const usersPrefix = "users"
 export const salt = "$2b$10$AAOFrjbRj8B5t6JVkUWNdu"
 
@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use(config => {
 
 
 export const getUserInfo = async (): Promise<AxiosResponse<userRetAuthSchema>> => {
-	return await axios.get(baseUrl + `/${usersPrefix}/info`)
+	return await axiosInstance.get(baseUrl + `/${usersPrefix}/info`)
 }
 
 export const checkCodeUser = async (

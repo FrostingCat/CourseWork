@@ -26,7 +26,7 @@ const Item: React.FC<Props> = ({ room, deleteRoom }) => {
 					throw new Error("Error! Device not edited")
 				}
 				console.log(data.device, { data })
-				setDevices(data.device as deviceSchema[])
+				// setDevices(data.device as deviceSchema[])
 			})
 			.catch(err => console.log(err))
 	}
@@ -37,7 +37,7 @@ const Item: React.FC<Props> = ({ room, deleteRoom }) => {
 				if (status !== 200) {
 					throw new Error("Error! Device not deleted")
 				}
-				setDevices(data.device as deviceSchema[])
+				// setDevices(data.device as deviceSchema[])
 			})
 			.catch(err => console.log(err))
 	}

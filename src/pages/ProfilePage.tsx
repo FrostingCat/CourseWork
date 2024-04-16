@@ -2,28 +2,25 @@ import {getDateTime} from '../components/DateUtil';
 import Profile from '../components/Profile';
 import '../css/materialize.css';
 import '../css/profilepage.css';
-import lamp from "../images/lamp.jpg";
 import SlideBar from "../components/Slidebar";
+import {useEffect} from "react";
 
 function ProfilePage() {
-	setInterval(function () {
-		document.getElementById("digital-clock")!!.innerHTML = getDateTime();
-	}, 1000);
+	useEffect(() => {
+		const timer = setInterval(() => {
+			const clockElement = document.getElementById("digital-clock");
+			if (clockElement) {
+				clockElement.innerHTML = getDateTime();
+			}
+		}, 1000);
+
+		// Очистка таймера при размонтировании компонента
+		return () => clearInterval(timer);
+	}, []);
 
 	return (
 		<div>
 			<SlideBar/>
-
-			<ul id="slide-out" className="sidenav sidenav-fixed small">
-				<li><div className="user-view">
-					<div className="background">
-						<img src={lamp} />
-					</div>
-					<a><img className="circle" src={lamp} /></a>
-					<a><div id="digital-clock"></div></a>
-				</div></li>
-			</ul>
-
 			<div className="row profile-row">
 				<Profile />
 			</div>

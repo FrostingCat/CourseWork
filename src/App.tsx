@@ -10,6 +10,8 @@ import CodePage from './pages/CodePage';
 import ProfilePage from './pages/ProfilePage';
 import DevicesPage from './pages/DevicesPage';
 import RoomsPage from './pages/RoomsPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import TwoFactorAuthPage from './pages/TwoFactorAuthPage';
 
 function App() {
 	return (
@@ -21,9 +23,14 @@ function App() {
 					<Route path="/registration" element={<RegistrationPage />} />
 					<Route path="/code" element={<CodePage />} />
 					<Route path="/home" element={<HomePage />} />
-					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/devices" element={<DevicesPage />} />
 					<Route path="/rooms" element={<RoomsPage />} />
+					<Route path="/2fa" element={<TwoFactorAuthPage />} />
+					<Route path="/dashboard" element={
+						<ProtectedRoute>
+							<ProfilePage />
+						</ProtectedRoute>
+					} />
 				</Routes>
 			</Router>
 		</div>

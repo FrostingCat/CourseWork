@@ -23,7 +23,7 @@ function LoginPage() {
                     setErrorMessage("Неправильная почта или пароль");
                     throw new Error("Error! User is not registered")
                 }
-                localStorage.setItem('token', data.token)
+                localStorage.setItem('2fa-token', data.token)
                 getUserInfo()
                     .then(({status, data}) => {
                         if (status == 404 || status == 401) {
@@ -34,7 +34,7 @@ function LoginPage() {
                         localStorage.setItem('surname', data.surname)
                         localStorage.setItem('email', email)
                     })
-                navigate('/profile');
+				navigate('/2fa');
             })
             .catch(err => {
                 alert("Неверное имя пользователя или пароль")

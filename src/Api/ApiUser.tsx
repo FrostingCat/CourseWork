@@ -8,8 +8,22 @@ const axiosInstance = axios.create({
 	baseURL: baseUrl,
 });
 
+const axiosInstanceOTP = axios.create({
+	baseURL: baseUrl,
+});
+
 axiosInstance.interceptors.request.use(config => {
 	const token = localStorage.getItem('token');
+	if (token) {
+		config.headers['Authorization'] = token;
+	}
+	return config;
+}, error => {
+	return Promise.reject(error);
+});
+
+axiosInstanceOTP.interceptors.request.use(config => {
+	const token = localStorage.getItem('2fa-token');
 	if (token) {
 		config.headers['Authorization'] = token;
 	}
@@ -21,6 +35,14 @@ axiosInstance.interceptors.request.use(config => {
 
 export const getUserInfo = async (): Promise<AxiosResponse<userRetAuthSchema>> => {
 	return await axiosInstance.get(baseUrl + `/${usersPrefix}/info`)
+}
+
+export const checkTwoFactorAuth = async (
+	otp: String
+): Promise<AxiosResponse<ApiTokenDataType>> => {
+	return await axiosInstance.post(`/api/verify_otp`, {
+		otp: otp
+	});
 }
 
 export const checkCodeUser = async (

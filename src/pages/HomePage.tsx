@@ -6,7 +6,6 @@ import {getDateTime} from '../components/DateUtil';
 import SlideBar from "../components/Slidebar";
 
 function HomePage() {
-
     setInterval(function () {
         document.getElementById("digital-clock")!!.innerHTML = getDateTime();
     }, 1000);

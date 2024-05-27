@@ -202,7 +202,6 @@ function RoomsPage() {
                                 <Button key={room.id} onClick={() => handleRoomClick(room)}
                                         className="people-room purple darken-3"
                                         style={{
-                                            // border: '1px solid #000',
                                             borderRadius: 25,
                                             fontSize: 17,
                                             color: "white",

@@ -9,7 +9,10 @@ import {getSecurityPhoto} from "../Api/ApiSecurity";
 import {baseIp, basePort} from "../Api/ApiEnv";
 
 function SlideBar() {
-    const [message, setMessage] = useState<string[]>([]);
+    const [message, setMessage] = useState<string[]>(() => {
+        const savedMessages = localStorage.getItem('messages');
+        return savedMessages ? JSON.parse(savedMessages) : [];
+    });
     const navigate = useNavigate();
     const name = localStorage.getItem('name')
     const surname = localStorage.getItem('surname')
@@ -22,16 +25,11 @@ function SlideBar() {
             edge: "right"
         });
 
-        const ip = "192.168.65.74"
-
         const webSocketManager = WebSocketManager.getInstance(`wss://${baseIp}:${basePort}/security/client`)
-        //handleCameraPhoto(ip)
 
         webSocketManager.socket.onmessage = (event) => {
             handleCameraPhoto(event.data)
-            console.log("event", event.data)
         };
-
     }, []);
 
     const handleCameraPhoto = (ip: string): void => {
@@ -40,7 +38,12 @@ function SlideBar() {
                 if (status !== 200) {
                     throw new Error("Error! User not edited")
                 }
-                setMessage(oldMessages => [...oldMessages, URL.createObjectURL(data)]);
+				const photoUrl = URL.createObjectURL(data);
+				setMessage(oldMessages => {
+                    const updatedMessages = [...oldMessages, photoUrl];
+                    localStorage.setItem('messages', JSON.stringify(updatedMessages));
+                    return updatedMessages;
+                });
                 console.log(data)
             })
             .catch(err => {
@@ -87,8 +90,8 @@ function SlideBar() {
                         <a>
                             <div id="digital-clock"></div>
                         </a>
-                        {message.map((msg, _) => (
-                            <a><img className="message" src={msg}/></a>
+                        {message.map((msg, index) => (
+                            <a key={index}><img className="message" src={msg}/></a>
                         ))}
                     </div>
                 </li>
